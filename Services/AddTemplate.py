@@ -1,3 +1,6 @@
+testing_name = 'test beach visit'
+testing_text = "I went to the beach on .date#date of beach visit#, and I spend the day with .name#beach friend 1#, .name#beach friend 2# and .name#beach friend 3#."
+
 class AddTemplate():
     name = 'Add_Template'
     
@@ -28,6 +31,9 @@ class AddTemplate():
                 break
         print('Sorry, an Error Occured. Error Code: MSAT2')
 
+    def error_notify(self, ):
+        self.messagebox.askokcancel('Formatting Error(s) Were Found', 'They have been flagged. \nPlease fix these and resubmit')
+           
     def confirm_submit(self,):
         # Puts up a message box to confirm submission
         if self.messagebox.askokcancel('Submit New Template', 'Are you ready to submit?'):
@@ -85,21 +91,23 @@ class AddTemplate():
                 if self.confirm_overwrite(option_name):
                     self.call_update = True
                     self.target_menu = self.name
+                    return
                 else: 
                     self.template_submit = False
                     return
+        self.call_update = True
 
     def get_new_template_data(self,):
         self.nt_name = self.nt_label.get()
-        self.nt_text = self.nt_entry.get()
+        self.nt_text = self.nt_entry.get('1.0', "end-1c")
         
     def get_options(self, documents):
         self.options = documents.get_template_names()
 
     def enter_new_template_text(self, root, template_name, template_text = ''):
         if self.nt_entry:
-            template_name = self.nt_label.get()
-            template_text = self.nt_entry.get()
+            template_name = self.nt_name
+            template_text = self.nt_text
         vspacing = (0,2)
         hspacing = (3,3)
         nt_frame = self.ttk.Frame(root)
@@ -108,20 +116,37 @@ class AddTemplate():
         self.nt_label.insert(0,template_name)
         self.nt_label.pack(pady=vspacing, padx=hspacing, anchor='w', fill='x')
         self.nt_entry = self.tk.Text(nt_frame, )
-        self.nt_entry.insert(0,template_text)
+        self.nt_entry.insert('1.0', template_text)
         self.nt_entry.pack(pady=vspacing, padx=hspacing, anchor='w', fill='both', expand=True)
 
-    def display_validation_errors(self, new_doc):
-        for i in range(len(new_doc.queries)):
-            
+    def notify_tag_error(self, tag, re):
+        tag_error = 'ERROR: NOT A RECOGNIZED TAG'
+        content = re.search(tag, self.nt_text).group(1)
+        self.nt_text = re.sub(tag,f'{tag_error} {content}')
 
+    def notify_description_error(self, description, re):
+        description_error = 'ERROR: DESCRIPTION TOO LONG, ENSURE IT IS CLOSED WITH "#"'
+        content = re.search(description, self.nt_text).group(1)
+        self.nt_text = re.sub(description,f'{description_error} {content}')
+
+    def display_validation_errors(self, new_doc, re):
+        error_present = False
+        for i in range(len(new_doc.queries)):
+            if not new_doc.valid_tags[i]:
+                self.notify_tag_error(new_doc.queries[i][0], re)
+                error_present = True
+            if not new_doc.valid_description[i]:
+                self.notify_description_error(new_doc.queries[i][1], re)
+                error_present = True
+        if error_present:
+            self.error_notify()
 
     def submit_current_template(self, documents):
         if not self.template_submit:
             return
         self.get_new_template_data()    
         documents.validate_template_for_db(self.nt_name, self.nt_text)
-        self.dispaly_validation_errors(self, documents.new_doc)
+        self.display_validation_errors(self, documents.new_doc, documents.re)
 
     def update_menu(self, root, menu_names, documents, template_name ='Enter New Template Name'):
         
@@ -132,12 +157,12 @@ class AddTemplate():
         self.display_formatting(root)
         
         # Field for entering new macro text and name 
-        self.enter_new_template_text(root, template_name)
+        self.enter_new_template_text(root, template_name=testing_name, template_text=testing_text)
 
         # If submition is valid and called, this function will run.
         self.submit_current_template(documents)
 
         # Button to begin submittion of a created macro. Includes confirmation request and checks for overwrite with a second confirmation
         
-        self.submit_new_template_button(root, menu_names)
+        self.submit_new_template_button(root)
 

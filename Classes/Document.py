@@ -1,6 +1,4 @@
-from Query import tags, Query
-
-class Document ():
+class Document():
     
     def __init__(self,) -> None:
         self.document_name = None
@@ -11,6 +9,8 @@ class Document ():
         self.valid_descriptions = []
         self.text = None
         self.max_description_lenth = 250
+        self.qry_cls = None
+        self.tags = None
 
     def get_queries(self):
         self.queries = []
@@ -24,7 +24,7 @@ class Document ():
     def validate_tags(self, i=0):
         self.valid_queries = [0] * len(self.queries)
         for query in self.queries:
-            if query[0] in tags[0]:
+            if query[0] in self.tags[0]:
                 self.valid_tags[i] = True
                 i += 1
                 continue
