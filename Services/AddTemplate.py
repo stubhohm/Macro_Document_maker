@@ -148,21 +148,21 @@ class AddTemplate():
         documents.validate_template_for_db(self.nt_name, self.nt_text)
         self.display_validation_errors(self, documents.new_doc, documents.re)
 
-    def update_menu(self, root, menu_names, documents, template_name ='Enter New Template Name'):
+    def update_menu(self, root, menu_names, documents, editor, template_name ='Enter New Template Name'):
         
         # Gets a list of stored template names, used to prevent accidental overwriting or making two docs with the same name
         self.get_options(documents)
         
         # Shows a general list of format options and can be toggled on an off
-        self.display_formatting(root)
+        #self.display_formatting(root)
         
         # Field for entering new macro text and name 
-        self.enter_new_template_text(root, template_name=testing_name, template_text=testing_text)
+        #self.enter_new_template_text(root, template_name=testing_name, template_text=testing_text)
 
         # If submition is valid and called, this function will run.
-        self.submit_current_template(documents)
+        #self.submit_current_template(documents)
 
         # Button to begin submittion of a created macro. Includes confirmation request and checks for overwrite with a second confirmation
         
-        self.submit_new_template_button(root)
+        #self.submit_new_template_button(root)
 

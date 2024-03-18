@@ -4,7 +4,7 @@ docs_table = 'DocumentsTable'
 
 id_sql = 'id'
 name_sql = 'doc_name'
-text_sql = 'doc_text'
+path_sql = 'doc_path'
 
 
 
@@ -25,7 +25,7 @@ class Documentsdb():
             CREATE TABLE IF NOT EXISTS {docs_table} (
             {id_sql} INTEGER PRIMARY KEY,
             {name_sql} TEXT NOT NULL,
-            {text_sql} TEXT NOT NULL
+            {path_sql} TEXT NOT NULL
             )                
         ''')
         self.connection.commit()

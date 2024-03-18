@@ -1,3 +1,6 @@
+from Classes.Doc_types.ApplicationForAppointmentofPR import ApplicationForAppointmentofPR
+from Classes.CaseInformation import CaseInformation
+
 class GUIManager():
     def __init__(self, display, messagebox):
         self.display = display
@@ -39,20 +42,28 @@ class GUIManager():
                     break
             self.active_menu = menu
 
-    def set_menu(self, display, menu_names, input):
+    def set_menu(self, display, menu_names, input, editor):
         if self.update_menu:
             self.update_menu = False
             self.active_menu.call_update = False
             self.clear_window()
-            self.active_menu.update_menu(display, menu_names, input)
+            self.active_menu.update_menu(display, menu_names, input, editor)
 
-    def update_GUI(self, session, input):
+    def update_GUI(self, session, input, editor):
         # Confirmation box to prevent accidental closing the app early
         self.display.protocol('WM_DELETE_WINDOW', lambda: self.close_window(session))
         
         # Sets the menu and after an update is called, refreshes the display format
-        self.set_menu(self.display, self.menu_names, input)
+        self.set_menu(self.display, self.menu_names, input, editor)
         
+        editor.pdf_type = ApplicationForAppointmentofPR()
+        editor.open_pdf()
+        editor.get_fields()
+        editor.copy_pdf()
+        editor.update_form_fields(CaseInformation())
+        editor.fill_in_form()
+        editor.output_new_doc()
+
         # Checks to see if an update was called in the window and reports that to the manager
         if isinstance(self.active_menu.call_update, bool):
             self.update_menu = self.active_menu.call_update

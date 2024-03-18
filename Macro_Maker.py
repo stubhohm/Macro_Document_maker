@@ -1,12 +1,17 @@
 import tkinter as tk 
 import sqlite3
 import re
+from PyPDF2 import PdfReader, PdfWriter
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 from tkinter import Tk, ttk, messagebox
 from Classes.ActiveUser import ActiveUser
 from Classes.Documents import Documentsdb 
 from Classes.Document import Document
 from Classes.Query import Query, tags
 from Classes.Session import Session
+from Classes.CaseInformation import CaseInformation
+from Services.DocumentEditor import DocumentEditor
 from Services.GUIManager import GUIManager
 from Services.MainScreen import MainScreen
 from Services.AddTemplate import AddTemplate
@@ -18,8 +23,10 @@ def init_instances():
     ui_mngr.init_display('Macro Document Maker')
     docs_db = Documentsdb(sqlite3, re, Document)
     docs_db.init_db()
+    doc_editor = DocumentEditor(PdfReader, PdfWriter, canvas, letter)
+    doc_editor.input_pdf_path = 'Services\Docs\Application for Appointment of PR.pdf'
     # User is the root variable that all the other objects and instances will branch from
-    user = ActiveUser(Session(), docs_db, ui_mngr)
+    user = ActiveUser(Session(), docs_db, ui_mngr, doc_editor)
     return user
 
 
@@ -38,7 +45,7 @@ def main():
         user.select_input()
 
         # Handles GUI updates, requests for switching and input handling
-        user.ui_mngr.update_GUI(user.session, user.input_data)
+        user.ui_mngr.update_GUI(user.session, user.input_data, user.editor)
 
         # Validates GUI screen switches and initates that action
         user.ui_mngr.select_menu(user.ui_mngr.active_menu.target_menu)
