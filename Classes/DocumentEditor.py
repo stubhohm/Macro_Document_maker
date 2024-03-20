@@ -39,7 +39,6 @@ class DocumentEditor:
         self.output_new_doc()
         print("outputting doc")
 
-
     def open_pdf(self):
         # Step 1: Open and Read the PDF Document
         self.input_pdf_reader = self.reader(open(self.input_pdf_path, "rb"))
