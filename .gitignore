@@ -11,6 +11,9 @@ __pycache__/
 # Ignore pdfs
 *.pdf
 
+# Ignore .db while WIP
+*.db
+
 # C extensions
 *.so
 

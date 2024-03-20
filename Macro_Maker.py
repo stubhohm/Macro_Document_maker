@@ -11,7 +11,7 @@ from Classes.Document import Document
 from Classes.Query import Query, tags
 from Classes.Session import Session
 from Classes.CaseInformation import CaseInformation
-from Services.DocumentEditor import DocumentEditor
+from Classes.DocumentEditor import DocumentEditor
 from Services.GUIManager import GUIManager
 from Services.MainScreen import MainScreen
 from Services.AddTemplate import AddTemplate

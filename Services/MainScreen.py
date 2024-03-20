@@ -36,7 +36,7 @@ class MainScreen():
         combo_box.bind('<<ComboboxSelected>>', lambda: self.on_box_select())
         combo_box.pack(pady=10)
 
-    def update_menu(self, root, menu_names, documents):
+    def update_menu(self, root, menu_names, documents, editor):
         # Gets list of stored template names
         self.get_options(documents)
         # Makes button and on click makes a request to update to add a new template

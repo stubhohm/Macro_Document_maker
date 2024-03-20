@@ -1,3 +1,5 @@
+main_screen = 'Main_Screen'
+doc_editor = 'Document_Editor'
 class ActiveUser:
     def __init__(self, session, docs, ui_mngr, editor):
         self.session = session
@@ -12,9 +14,11 @@ class ActiveUser:
             self.ui_mngr.menus.append(new_ui)
             self.ui_mngr.menu_names.append(new_ui.name)
         self.ui_mngr.menu_names.append(self.editor.name)
-        print(f'init_menus {self.ui_mngr.menu_names}')
 
     def select_input(self):
         name = self.ui_mngr.active_menu.name
-        if name == 'Main_Screen':
+        if name == main_screen:
             self.input_data = self.docs
+        if name == doc_editor:
+            path = self.docs.get_path(name)
+            self.input_data = [name, path]

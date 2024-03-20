@@ -1,6 +1,6 @@
-from PyPDF2 import PdfReader, PdfWriter
+'''from PyPDF2 import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter'''
 
 class DocumentEditor:
     name = 'Document_Editor'
@@ -15,13 +15,25 @@ class DocumentEditor:
         self.output_pdf_path = 'test.pdf'
         self.input_pdf_path = None
         self.pdf_type = None
+        self.auto_fill = False
+        self.destination_file_py = None
 
+    def add_existing_fields(self,):
+        with open(self.destination_file_py, 'r') as py_file:
+            py_file = py_file.read()
+        
+        fx_text = '\n\n    def update_fields(self, case_information, existing_fields):'
+        py_file = py_file + fx_text 
+        for field in self.existing_fields:
+            text = f"\n        existing_fields['{field}'] = case_information."
+            py_file = py_file + text
+        
+        with open(self.destination_file_py, 'w') as dest_file:
+            dest_file.write(py_file)
 
-    def call_update(self, menu_names, input):
-        self.pdf_type = input.application
-        self.open_pdf()
-        self.get_fields()
-        self.copy_pdf()
+    def update_menu(self, menu_names, input):
+        self.input_case_data(input)
+        # see what still needs info and query user
         self.update_form_fields(input.case_information)
         self.fill_in_form()
         self.output_new_doc()
