@@ -8,8 +8,8 @@ __pycache__/
 *$py.class
 *.pyo
 
-# pdfs
-.pdf
+# Ignore pdfs
+*.pdf
 
 # C extensions
 *.so

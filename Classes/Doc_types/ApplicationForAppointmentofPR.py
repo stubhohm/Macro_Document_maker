@@ -1,4 +1,4 @@
-#from ..CaseInformation import CaseInformation
+
 name = 'name'
 address = 'Street_address'
 city = 'City'
@@ -13,9 +13,14 @@ l_name = 'last_name'
 rel = 'relation'
 
 court_county = 'Probate_Court_County'
+court_address = 'Court_address'
+court_tele = 'Court_Tele'
+judge ='Judge'
 deat_cert_attach = 'death_cert_attached'
 death_cert_avail = 'death_cert_available'
+case_no = 'CASE NO'
 MCL = 'MCL_7003311'
+existing_appt_rep = 'and the appointment has not been terminated  The personal representatives name and address are'
 
 death_date = 'date_of_death'
 death_time = 'time_of_death'
@@ -25,117 +30,19 @@ age_if_minor ='AGE_if_minor'
 legal_dis = 'Legal_disability'
 legal_rep ='REPRESENTED BY Name address and capacity'
 
-
-class ApplicationForAppointmentofPR:
-     
+class ApplicationForAppointmentofPR:  
     def __init__(self) -> None:
         pass
         self.name = 'Application for Appointment of PR'
-        self.doc_path ='ApplicationForAppointmentofPR.pdf'
-        self.fields = {
-    'STATE OF MICHIGAN PROBATE COURT COUNTY': {'State'}, 
-    'First middle and last name': {'First middle and last name'},
-    'Petitioners name address and telephone no': {''}, 
-    'Petitioners attorney bar no address and telephone no': {}, 
-    'Name of applicant': {'applicant name'}, 
-    'Relationship to decedent ie heir devisee child spouse creditor beneficiary etc': {}, 
-    'Date of death': {}, 
-    'Time if known': {}, 
-    'CityTownshipVillage': {}, 
-    'County': {}, 
-    'State': {},
-    'A death certificate has been issued and a copy accompanies this application as a separate document': {}, 
-    'No death certificate is available Attached is alternative documentation of the decedents death': {}, 
-    'NAMERow1': {}, 
-    'Street address': {},
-    'City': {}, 
-    'State_2': {}, 
-    'Zip': {}, 
-    'RELATIONSHIPRow1': {}, 
-    'AGE if minorRow1': {}, 
-    'NAMERow2': {}, 
-    'Street address_2': {}, 
-    'City_2': {},
-    'State_3': {}, 
-    'Zip_2': {}, 
-    'RELATIONSHIPRow2': {}, 
-    'AGE if minorRow2': {}, 
-    'NAMERow3': {}, 
-    'Street address_3': {}, 
-    'City_3': {}, 
-    'State_4': {}, 
-    'Zip_3': {}, 
-    'RELATIONSHIPRow3': {}, 
-    'AGE if minorRow3': {}, 
-    'NAMERow4': {},
-    'Street address_4': {}, 
-    'City_4': {}, 
-    'State_5': {}, 
-    'Zip_4': {}, 
-    'RELATIONSHIPRow4': {}, 
-    'AGE if minorRow4': {}, 
-    'NAMERow1_2': {}, 
-    'LEGAL DISABILITYRow1': {}, 
-    'REPRESENTED BY Name address and capacityRow1': {},
-    'NAMERow2_2': {}, 
-    'LEGAL DISABILITYRow2': {}, 
-    'REPRESENTED BY Name address and capacityRow2': {}, 
-    'NAMERow3_2': {}, 
-    'LEGAL DISABILITYRow3': {}, 
-    'REPRESENTED BY Name address and capacityRow3': {},
-    'a Venue is proper in this county because the decedent was domiciled in this county on the date of death': {}, 
-    'b The decedent was not domiciled in Michigan but venue is proper in this county because property of the decedent': {}, 
-    'a The decedent died intestate and after exercising reasonable diligence I am unaware of any unrevoked testamentary': {}, 
-    'b I am aware of an unrevoked testamentary instrument relating to property located in this state as defined under': {}, 
-    'c The decedents will dated': {}, 
-    'd An authenticated copy of the will and codicils if any probated in': {}, 
-    'application according to MCL 7003311': {}, 
-    'is already in the courts possession': {}, 
-    'isare offered for probate and': {}, 
-    'undefined': {}, 
-    'isare attached to this application': {}, 
-    'isare already in the courts': {}, 
-    'County_2': {}, 
-    'State_6': {}, 
-    'and the appointment has not been terminated  The personal representatives name and address are': {}, 
-    'State_7': {}, 
-    '8 A personal representative has been previously appointed in': {}, 
-    '9 I nominate': {}, 
-    '10 Other persons have prior or equal right to appointment as personal representative They are': {}, 
-    'Name': {}, 
-    'Address': {}, 
-    'City_5': {}, 
-    'Name_2': {}, 
-    'Hisher address is': {}, 
-    'Address_2': {}, 
-    'City_6': {}, 
-    'Name_3': {}, 
-    'Name_4': {}, 
-    'Name_5': {}, 
-    'Name_6': {}, 
-    '11 The will expressly requests that the personal representative serve with bond': {}, 
-    '12 A special personal representative is necessary because': {}, 
-    'undefined_3': {}, 
-    '13 Informal probate of the will': {}, 
-    '14 Informal appointment of the nominated personal representative': {}, 
-    '15 The appointment of a special personal representative pending the appointment of the nominated personal': {}, 
-    'with': {}, 
-    'without': {}, 
-    'Date': {}, 
-    'Date_2': {}, 
-    'Judge': {}, 
-    'Text2': {}, 
-    'Text3': {}, 
-    'CASE NO': {}, 
-    # Case No '/Kids': [IndirectObject(176, 0, 2986483403712), IndirectObject(121, 0, 2986483403712), IndirectObject(133, 0, 2986483403712)]
-    'Text4': {}, 
-    'Text5': {},
-    }
+        self.doc_path ='Services\Docs\Application for Appointment of PR.pdf'
         
     def update_fields(self, case_information, existing_fields):
-        #case_information = CaseInformation()
         existing_fields['STATE OF MICHIGAN PROBATE COURT COUNTY'] = case_information.filing_info[court_county]
-        
+        existing_fields[judge] = case_information.filing_info[judge]
+        existing_fields['Text2'] = case_information.filing_info[court_tele]
+        existing_fields['Text3'] = case_information.filing_info[court_address]
+        existing_fields[case_no] = case_information.filing_info[case_no]
+        # Case No '/Kids'] [IndirectObject(176, 0, 2986483403712), IndirectObject(121, 0, 2986483403712), IndirectObject(133, 0, 2986483403712)]
         first_name = str(case_information.decedent_info[f_name])
         middle_name = str(case_information.decedent_info[m_name])
         last_name = str(case_information.decedent_info[l_name])
@@ -151,16 +58,15 @@ class ApplicationForAppointmentofPR:
         app_city = case_information.applicant_info[city] 
         app_state = case_information.applicant_info[state]
         app_zip = case_information.applicant_info[zip]
-        app_full_add = app_add + ' ' + app_city + ', ' + app_state + ' ' + app_zip + '\n'
+        app_full_add = app_add + '\n' + app_city + ', ' + app_state + ' ' + app_zip + '\n'
         app_tele = case_information.applicant_info[tele]
         existing_fields['Petitioners name address and telephone no'] = app_name + app_full_add + app_tele
         
-        att_name = case_information.attorney_info[name]
+        att_name = case_information.attorney_info[name] + '\n'
         att_bar = case_information.attorney_info[bar_no] + '\n'
-        att_full_add = case_information.attorney_info[address] + ' ' + case_information.attorney_info[city] + ', ' + case_information.attorney_info[state] + ' ' + case_information.attorney_info[zip] + '\n'
+        att_full_add = case_information.attorney_info[address] + '\n' + case_information.attorney_info[city] + ', ' + case_information.attorney_info[state] + ' ' + case_information.attorney_info[zip] + '\n'
         att_tele = case_information.attorney_info[tele]
         existing_fields['Petitioners attorney bar no address and telephone no'] =  att_name + att_bar + att_full_add + att_tele 
-
         existing_fields['Name of applicant']= case_information.applicant_info[f_name] + ' ' + case_information.applicant_info[l_name] 
         existing_fields['Relationship to decedent ie heir devisee child spouse creditor beneficiary etc'] = case_information.applicant_info[rel]
         existing_fields['Date of death'] = case_information.decedent_info[death_date] 
@@ -168,104 +74,102 @@ class ApplicationForAppointmentofPR:
         existing_fields['CityTownshipVillage'] = case_information.decedent_info[city]
         existing_fields['County'] = case_information.decedent_info[county]
         existing_fields['State'] = case_information.decedent_info[state]
-        existing_fields['A death certificate has been issued and a copy accompanies this application as a separate document'] = ""
-        existing_fields['No death certificate is available Attached is alternative documentation of the decedents death'] = ""
-        existing_fields['NAMERow1'] = case_information.Interested_persons[0][name]
-        existing_fields['Street address'] = case_information.Interested_persons[0][address]
-        existing_fields['City'] = case_information.Interested_persons[0][city] 
-        existing_fields['State_2'] = case_information.Interested_persons[0][state]  
-        existing_fields['Zip'] = case_information.Interested_persons[0][zip]  
-        existing_fields['RELATIONSHIPRow1'] = case_information.Interested_persons[0][rel] 
-        existing_fields['AGE if minorRow1'] = case_information.Interested_persons[0][age_if_minor]  
-        existing_fields['NAMERow2'] = case_information.Interested_persons[1][name]
-        existing_fields['Street address_2'] = case_information.Interested_persons[1][address] 
-        existing_fields['City_2'] = case_information.Interested_persons[1][city]
-        existing_fields['State_3'] = case_information.Interested_persons[1][state]
-        existing_fields['Zip_2'] = case_information.Interested_persons[1][zip]
-        existing_fields['RELATIONSHIPRow2'] = case_information.Interested_persons[1][rel]
-        existing_fields['AGE if minorRow2'] = case_information.Interested_persons[1][age_if_minor]
-        existing_fields['NAMERow3'] = case_information.Interested_persons[2][name]
-        existing_fields['Street address_3'] = case_information.Interested_persons[2][address]
-        existing_fields['City_3'] = case_information.Interested_persons[2][city]
-        existing_fields['State_4'] = case_information.Interested_persons[2][state]
-        existing_fields['Zip_3'] = case_information.Interested_persons[2][zip]
-        existing_fields['RELATIONSHIPRow3'] = case_information.Interested_persons[2][rel]
-        existing_fields['AGE if minorRow3'] = case_information.Interested_persons[2][age_if_minor]
-        existing_fields['NAMERow4']= case_information.Interested_persons[3][name]
-        existing_fields['Street address_4'] = case_information.Interested_persons[3][address]
-        existing_fields['City_4'] = case_information.Interested_persons[3][city]
-        existing_fields['State_5'] = case_information.Interested_persons[3][state]
-        existing_fields['Zip_4'] = case_information.Interested_persons[3][zip]
-        existing_fields['RELATIONSHIPRow4'] = case_information.Interested_persons[3][rel]
-        existing_fields['AGE if minorRow4'] = case_information.Interested_persons[3][age_if_minor]
-        
-        disabled_count = 0
-        for person in case_information.Interested_persons:
+        #existing_fields['A death certificate has been issued and a copy accompanies this application as a separate document'] = ""
+        #existing_fields['No death certificate is available Attached is alternative documentation of the decedents death'] = ""
+        for i, person in enumerate(case_information.Interested_persons):
+            if i == 0:
+                existing_fields['NAMERow1'] = person[name]
+                existing_fields['Street address'] = person[address]
+                existing_fields['City'] = person[city] 
+                existing_fields['State_2'] = person[state]  
+                existing_fields['Zip'] = person[zip]  
+                existing_fields['RELATIONSHIPRow1'] = person[rel] 
+                existing_fields['AGE if minorRow1'] = person[age_if_minor]  
+            else:
+                existing_fields[f'NAMERow{i+1}'] = person[name]
+                existing_fields[f'Street address_{i+1}'] = person[address] 
+                existing_fields[f'City_{i+1}'] = person[city]
+                existing_fields[f'State_{i+2}'] = person[state]
+                existing_fields[f'Zip_{i+1}'] = person[zip]
+                existing_fields[f'RELATIONSHIPRow{i+1}'] = person[rel]
+                existing_fields[f'AGE if minorRow{i+1}'] = person[age_if_minor]
+        for i, person in enumerate(case_information.Interested_persons):
             if person[legal_dis]:
-                if disabled_count == 2:
-                    existing_fields['NAMERow3_2'] = person[name]
-                    existing_fields['LEGAL DISABILITYRow3'] = person[legal_dis]
-                    existing_fields['REPRESENTED BY Name address and capacityRow3'] = person[legal_rep]
-                    disabled_count = 3
-                if disabled_count == 1:
-                    existing_fields['NAMERow2_2'] = person[name] 
-                    existing_fields['LEGAL DISABILITYRow2'] = person[legal_dis]
-                    existing_fields['REPRESENTED BY Name address and capacityRow2'] = person[legal_rep]
-                    disabled_count = 2
-                if disabled_count == 0:
-                    existing_fields['NAMERow1_2'] = person[name] 
-                    existing_fields['LEGAL DISABILITYRow1'] = person[legal_dis] 
-                    existing_fields['REPRESENTED BY Name address and capacityRow1'] = person[legal_rep]
-                    disabled_count = 1
-                
-             
-        existing_fields['a Venue is proper in this county because the decedent was domiciled in this county on the date of death'] = '' 
-        existing_fields['b The decedent was not domiciled in Michigan but venue is proper in this county because property of the decedent'] = '' 
-        existing_fields['a The decedent died intestate and after exercising reasonable diligence I am unaware of any unrevoked testamentary'] = '' 
-        existing_fields['b I am aware of an unrevoked testamentary instrument relating to property located in this state as defined under'] = '' 
+                if i < 3:
+                    existing_fields[f'NAMERow{i+1}_2'] = person[name]
+                    existing_fields[f'LEGAL DISABILITYRow{i+1}'] = person[legal_dis]
+                    existing_fields[f'REPRESENTED BY Name address and capacityRow{i+1}'] = person[legal_rep]
+     
+        #existing_fields['a Venue is proper in this county because the decedent was domiciled in this county on the date of death'] = '' 
+        #existing_fields['b The decedent was not domiciled in Michigan but venue is proper in this county because property of the decedent'] = '' 
+        #existing_fields['a The decedent died intestate and after exercising reasonable diligence I am unaware of any unrevoked testamentary'] = '' 
+        #existing_fields['b I am aware of an unrevoked testamentary instrument relating to property located in this state as defined under'] = '' 
+        
+        
+         
+        
+        # 6B MCL700.1301
+        existing_fields['application according to MCL 7003311'] = case_information.decedent_info[MCL]
+        # 6B boxes
+        #existing_fields['is attached to this application'] = T/F
+        #existing_fields['is already in the courts possession']  = T/F
+        # 6c
         existing_fields['c The decedents will dated'] = case_information.decedent_info[will_date] 
-        existing_fields['d An authenticated copy of the will and codicils if any probated in'] = "" 
-        existing_fields['application according to MCL 7003311'] = case_information.decedent_info[MCL] 
-        existing_fields['is already in the courts possession']  = ''
-        existing_fields['isare offered for probate and'] = ''
-        existing_fields['undefined'] =case_information.decedent_info[will_date]
-        existing_fields['isare attached to this application'] ='' 
-        existing_fields['isare already in the courts'] ='' 
-        existing_fields['County_2'] ='' 
-        existing_fields['State_6'] ='' 
-        existing_fields['and the appointment has not been terminated  The personal representatives name and address are'] ='' 
-        existing_fields['State_7'] ='' 
-        existing_fields['8 A personal representative has been previously appointed in'] ='' 
-        existing_fields['9 I nominate'] ='' 
-        existing_fields['10 Other persons have prior or equal right to appointment as personal representative They are'] ='' 
-        existing_fields['Name'] ='' 
-        existing_fields['Address'] ='' 
-        existing_fields['City_5'] ='' 
-        existing_fields['Name_2'] ='' 
-        existing_fields['Hisher address is'] ='' 
-        existing_fields['Address_2'] ='' 
-        existing_fields['City_6'] ='' 
-        existing_fields['Name_3'] ='' 
-        existing_fields['Name_4'] ='' 
-        existing_fields['Name_5'] ='' 
-        existing_fields['Name_6'] ='' 
-        existing_fields['11 The will expressly requests that the personal representative serve with bond'] ='' 
-        existing_fields['12 A special personal representative is necessary because'] ='' 
-        existing_fields['undefined_3'] ='' 
-        existing_fields['13 Informal probate of the will'] ='' 
-        existing_fields['14 Informal appointment of the nominated personal representative'] ='' 
-        existing_fields['15 The appointment of a special personal representative pending the appointment of the nominated personal'] ='' 
-        existing_fields['with'] ='' 
-        existing_fields['without'] ='' 
-        existing_fields['Date'] ='' 
-        existing_fields['Date_2'] ='' 
-        existing_fields['Judge'] ='' 
-        existing_fields['Text2'] ='' 
-        existing_fields['Text3'] ='' 
-        existing_fields['CASE NO'] ='' 
-        # Case No '/Kids'] [IndirectObject(176, 0, 2986483403712), IndirectObject(121, 0, 2986483403712), IndirectObject(133, 0, 2986483403712)]
-        existing_fields['Text4'] ='' 
-        existing_fields['Text5'] =''
+
+        
+        existing_fields['isare offered for probate and'] = case_information.decedent_info[will_date]
+        existing_fields['undefined'] = case_information.decedent_info[will_date]
+        
+        # 6c boxes
+        #existing_fields['isare attached to this application'] =T/F 
+        #existing_fields['isare already in the courts'] =T/F 
+        
+        # 6d authenticated copy exists and is on file iwth
+        #existing_fields['d An authenticated copy of the will and codicils if any probated in'] = T/F 
+        existing_fields['County_2'] ='County_2' 
+        existing_fields['State_6'] ='State_6' 
+        
+        # 8. Existing peronsal rep
+        #existing_fields['8 A personal representative has been previously appointed in'] = T/F
+        existing_fields[existing_appt_rep] ='existing rep county' 
+        existing_fields['State_7'] ='State_7' 
+        existing_fields['Name'] ='Name' 
+        existing_fields['Address'] ='Address' 
+        existing_fields['City_5'] ='City_5'
+        existing_fields['Name_2'] ='Name_2'
+        
+        # 9. Appointing Personal Rep
+        #existing_fields['9 I nominate'] =' ' 
+        existing_fields['Hisher address is'] ='Hisher address is' 
+        existing_fields['Address_2'] ='Address_2'
+        existing_fields['City_6'] ='City_6' 
+        
+        # 10. Other persons have prior or equal right to appointment are:
+        #existing_fields['10 Other persons have prior or equal right to appointment as personal representative They are'] =T/F 
+        existing_fields['Name_3'] ='Name_3' 
+        existing_fields['Name_4'] ='Name_4'
+        existing_fields['Name_5'] ='Name_5'
+        existing_fields['Name_6'] ='Name_6' 
+        
+        #existing_fields['11 The will expressly requests that the personal representative serve with bond'] =T/F 
+        #existing_fields['12 A special personal representative is necessary because'] =T/F
+        
+        # These two are for defining the reason need a special rep is needed, and is split across two lines.
+        existing_fields['undefined_2'] ='undefined_2' 
+        existing_fields['undefined_3'] ='undefined_3' 
+        
+        #existing_fields['13 Informal probate of the will'] =T/F 
+        #existing_fields['14 Informal appointment of the nominated personal representative'] =T/F
+        #existing_fields['15 The appointment of a special personal representative pending the appointment of the nominated personal'] =T/F 
+        #existing_fields['with'] =T/F 
+        #existing_fields['without'] =T/F 
+        
+        # Applicant and Attorney Signature Fields
+        existing_fields['Date'] =' '
+        existing_fields['Date_2'] =' '
+        existing_fields['Text4'] =' ' 
+        existing_fields['Text5'] =' '
+        ''''''
  
 '''
 

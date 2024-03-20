@@ -4,7 +4,7 @@ import re
 from PyPDF2 import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from tkinter import Tk, ttk, messagebox
+from tkinter import Tk, ttk, messagebox, filedialog
 from Classes.ActiveUser import ActiveUser
 from Classes.Documents import Documentsdb 
 from Classes.Document import Document
@@ -24,18 +24,16 @@ def init_instances():
     docs_db = Documentsdb(sqlite3, re, Document)
     docs_db.init_db()
     doc_editor = DocumentEditor(PdfReader, PdfWriter, canvas, letter)
-    doc_editor.input_pdf_path = 'Services\Docs\Application for Appointment of PR.pdf'
     # User is the root variable that all the other objects and instances will branch from
     user = ActiveUser(Session(), docs_db, ui_mngr, doc_editor)
     return user
-
 
 def close_application(user):
     user.docs.close_db()
 
 def main():
     user = init_instances()
-    user.init_menus(menus, tk, ttk, messagebox)
+    user.init_menus(menus, tk, ttk, messagebox, filedialog)
 
     # This is here to pick the starting screen for the ui_manager, the input coresponds to the '.name' in the screens in Services
     user.ui_mngr.select_menu('Main_Screen')

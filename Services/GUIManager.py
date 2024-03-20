@@ -9,6 +9,7 @@ class GUIManager():
         self.menu_names = []
         self.active_menu = None
         self.update_menu = True
+        self.confirm_close_init = False
 
     def clear_window(self):
         for widget in self.display.winfo_children():
@@ -18,6 +19,11 @@ class GUIManager():
         if centered:
             self.center_window(self.display, scale_x, scale_y)
         self.display.title(f'{name}')
+
+    def init_confirm_close(self, session):
+        if not self.confirm_close_init:
+            self.display.protocol('WM_DELETE_WINDOW', lambda: self.close_window(session))
+            self.confirm_close_init = True
 
     def center_window(self, window, scale_x, scale_y):
         window.update_idletasks()
@@ -32,7 +38,7 @@ class GUIManager():
     def close_window(self, session):
         if self.messagebox.askokcancel('Quit', 'Do you really want to quit?'):
             session.active = False
-            self.display.destroy()   
+            self.display.destroy()
 
     def select_menu(self, menu_name):
         if self.update_menu:
@@ -44,25 +50,20 @@ class GUIManager():
 
     def set_menu(self, display, menu_names, input, editor):
         if self.update_menu:
+            print(f'set_menu{menu_names}')
             self.update_menu = False
             self.active_menu.call_update = False
             self.clear_window()
-            self.active_menu.update_menu(display, menu_names, input, editor)
+            self.active_menu.update_menu(display, menu_names, input)
 
     def update_GUI(self, session, input, editor):
-        # Confirmation box to prevent accidental closing the app early
-        self.display.protocol('WM_DELETE_WINDOW', lambda: self.close_window(session))
-        
+        # Init Confirmation box to prevent accidental closing the app early
+        self.init_confirm_close(session)
+       
         # Sets the menu and after an update is called, refreshes the display format
         self.set_menu(self.display, self.menu_names, input, editor)
         
-        editor.pdf_type = ApplicationForAppointmentofPR()
-        editor.open_pdf()
-        editor.get_fields()
-        editor.copy_pdf()
-        editor.update_form_fields(CaseInformation())
-        editor.fill_in_form()
-        editor.output_new_doc()
+        
 
         # Checks to see if an update was called in the window and reports that to the manager
         if isinstance(self.active_menu.call_update, bool):

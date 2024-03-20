@@ -1,11 +1,12 @@
 class MainScreen():
     name = 'Main_Screen'
     
-    def __init__(self, display, tk, ttk, messagebox):
+    def __init__(self, display, tk, ttk, messagebox, filedialog):
         self.display = display
         self.tk = tk
         self.ttk = ttk
         self.messagebox = messagebox
+        self.filedialog = filedialog
         self.call_update = False
         self.target_menu = None
         self.options = []
@@ -35,7 +36,7 @@ class MainScreen():
         combo_box.bind('<<ComboboxSelected>>', lambda: self.on_box_select())
         combo_box.pack(pady=10)
 
-    def update_menu(self, root, menu_names, documents, editor):
+    def update_menu(self, root, menu_names, documents):
         # Gets list of stored template names
         self.get_options(documents)
         # Makes button and on click makes a request to update to add a new template

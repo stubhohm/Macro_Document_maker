@@ -4,11 +4,12 @@ testing_text = "I went to the beach on .date#date of beach visit#, and I spend t
 class AddTemplate():
     name = 'Add_Template'
     
-    def __init__(self, display, tk, ttk, messagebox):
+    def __init__(self, display, tk, ttk, messagebox, filedialog):
         self.display = display
         self.tk = tk
         self.ttk = ttk
         self.messagebox = messagebox
+        self.filedialog = filedialog
         self.call_update = False
         self.target_menu = None
         self.show_help = False
@@ -148,11 +149,24 @@ class AddTemplate():
         documents.validate_template_for_db(self.nt_name, self.nt_text)
         self.display_validation_errors(self, documents.new_doc, documents.re)
 
-    def update_menu(self, root, menu_names, documents, editor, template_name ='Enter New Template Name'):
+    def open_file_dialog(self):
+        file_path = self.filedialog.askopenfilename(title="Select a File", filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")])
+
+
+    def update_menu(self, root, menu_names, documents, template_name ='Enter New Template Name'):
         
         # Gets a list of stored template names, used to prevent accidental overwriting or making two docs with the same name
         self.get_options(documents)
         
+        open_button = self.tk.Button(root, text="Open File", command= lambda: self.open_file_dialog())
+        open_button.pack(padx=20, pady=20)
+
+        selected_file_label = self.tk.Label(root, text="Selected File:")
+        selected_file_label.pack()
+
+        file_text = self.tk.Text(root, wrap=self.tk.WORD, height=10, width=40)
+        file_text.pack(padx=20, pady=20)
+
         # Shows a general list of format options and can be toggled on an off
         #self.display_formatting(root)
         

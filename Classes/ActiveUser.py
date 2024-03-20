@@ -6,15 +6,13 @@ class ActiveUser:
         self.editor = editor
         self.input_data = None
 
-    def init_menus(self, menus, tk, ttk, messagebox):
-        uis = []
-        ui_names = []
+    def init_menus(self, menus, tk, ttk, messagebox, filedialog):
         for menu in menus:
-            new_ui = menu(self.ui_mngr.display, tk, ttk, messagebox)
-            uis.append(new_ui)
-            ui_names.append(new_ui.name)
-        self.ui_mngr.menus = uis
-        self.ui_mngr.menu_names = ui_names
+            new_ui = menu(display=self.ui_mngr.display, tk=tk, ttk=ttk, messagebox=messagebox, filedialog=filedialog)
+            self.ui_mngr.menus.append(new_ui)
+            self.ui_mngr.menu_names.append(new_ui.name)
+        self.ui_mngr.menu_names.append(self.editor.name)
+        print(f'init_menus {self.ui_mngr.menu_names}')
 
     def select_input(self):
         name = self.ui_mngr.active_menu.name

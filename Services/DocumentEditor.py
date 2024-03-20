@@ -3,7 +3,8 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 
 class DocumentEditor:
-    def __init__(self, reader, writer, canvas, letter) -> None:
+    name = 'Document_Editor'
+    def __init__(self, reader, writer, canvas, letter,) -> None:
         self.reader = reader
         self.writer = writer
         self.canvas = canvas
@@ -14,6 +15,18 @@ class DocumentEditor:
         self.output_pdf_path = 'test.pdf'
         self.input_pdf_path = None
         self.pdf_type = None
+
+
+    def call_update(self, menu_names, input):
+        self.pdf_type = input.application
+        self.open_pdf()
+        self.get_fields()
+        self.copy_pdf()
+        self.update_form_fields(input.case_information)
+        self.fill_in_form()
+        self.output_new_doc()
+        print("outputting doc")
+
 
     def open_pdf(self):
         # Step 1: Open and Read the PDF Document
