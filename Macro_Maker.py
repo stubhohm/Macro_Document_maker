@@ -6,10 +6,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from tkinter import Tk, ttk, messagebox, filedialog
 from Classes.ActiveUser import ActiveUser
-from Classes.Documents import Documentsdb 
-from Classes.Document import Document
 from Classes.Query import Query, tags
 from Classes.Session import Session
+from Classes.Documents import Documentsdb
 from Classes.CaseInformation import CaseInformation
 from Classes.DocumentEditor import DocumentEditor
 from Services.GUIManager import GUIManager
@@ -21,7 +20,7 @@ def init_instances():
     # UI Mngr houses the other screens and handles clearing and switching between screen displays
     ui_mngr = GUIManager(Tk(), messagebox)
     ui_mngr.init_display('Macro Document Maker')
-    docs_db = Documentsdb(sqlite3, re, Document)
+    docs_db = Documentsdb(sqlite3, re)
     docs_db.init_db()
     doc_editor = DocumentEditor(PdfReader, PdfWriter, canvas, letter)
     # User is the root variable that all the other objects and instances will branch from

@@ -23,14 +23,13 @@ path = "\n        self.doc_path ="
 
 class Documentsdb():
     name = "Documents_DataBase"
-    def __init__(self, sql, re, doc_cls):
+    def __init__(self, sql, re):
         self.document = []
         self.sql = sql
         self.re = re
         self.matches = None
         self.connection = sql.connect(db_path)
         self.cursor = self.connection.cursor()
-        self.doc_cls = doc_cls
         self.destination_dir = 'Services\\Docs'
         self.destination_file = None
         self.destination_dir_py = 'Classes\\Doc_types'
@@ -89,7 +88,7 @@ class Documentsdb():
         self.make_local_copy(template_name, file_path)
         self.add_to_db(template_name)
         print('added to db')
-        
+
     '''
     TODO
     def remove_from_db(self):
