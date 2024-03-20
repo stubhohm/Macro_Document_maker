@@ -51,7 +51,6 @@ class Documentsdb():
         self.cursor.close()
         self.connection.close()
 
-
     def get_template_names(self):
         self.cursor.execute(f'SELECT {name_sql} FROM {docs_table}')
         return self.cursor.fetchall()
@@ -84,19 +83,13 @@ class Documentsdb():
             text = constants + cls + snake_name + '():' + init + name + "'" + file_name + "'" + path + "'" + self.destination_file + "'"
             dest_file.write(text)
 
-    
-
     def set_to_db(self, template_name, file_path):
         ## Instance the new document
         self.new_doc = self.doc_cls()
         self.make_local_copy(template_name, file_path)
         self.add_to_db(template_name)
         print('added to db')
-
-
-    
-
-    
+        
     '''
     TODO
     def remove_from_db(self):

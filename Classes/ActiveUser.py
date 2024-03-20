@@ -1,5 +1,5 @@
 main_screen = 'Main_Screen'
-doc_editor = 'Document_Editor'
+add_template = 'Add_Template'
 class ActiveUser:
     def __init__(self, session, docs, ui_mngr, editor):
         self.session = session
@@ -17,8 +17,5 @@ class ActiveUser:
 
     def select_input(self):
         name = self.ui_mngr.active_menu.name
-        if name == main_screen:
+        if name == main_screen or name == add_template:
             self.input_data = self.docs
-        if name == doc_editor:
-            path = self.docs.get_path(name)
-            self.input_data = [name, path]
