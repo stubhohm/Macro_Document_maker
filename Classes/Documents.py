@@ -30,7 +30,6 @@ class Documentsdb():
         self.matches = None
         self.connection = sql.connect(db_path)
         self.cursor = self.connection.cursor()
-        self.new_doc = None
         self.doc_cls = doc_cls
         self.destination_dir = 'Services\\Docs'
         self.destination_file = None
