@@ -2,6 +2,7 @@ import tkinter as tk
 import sqlite3
 import re
 from PyPDF2 import PdfReader, PdfWriter
+from PyPDF2.generic import BooleanObject
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from tkinter import Tk, ttk, messagebox, filedialog
@@ -22,7 +23,7 @@ def init_instances():
     ui_mngr.init_display('Macro Document Maker')
     docs_db = Documentsdb(sqlite3, re)
     docs_db.init_db()
-    doc_editor = DocumentEditor(PdfReader, PdfWriter, canvas, letter)
+    doc_editor = DocumentEditor(PdfReader, PdfWriter, canvas, letter, BooleanObject)
     # User is the root variable that all the other objects and instances will branch from
     user = ActiveUser(Session(), docs_db, ui_mngr, doc_editor)
     return user

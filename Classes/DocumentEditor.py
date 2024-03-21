@@ -4,19 +4,24 @@ from reportlab.lib.pagesizes import letter'''
 
 class DocumentEditor:
     name = 'Document_Editor'
-    def __init__(self, reader, writer, canvas, letter,) -> None:
+    def __init__(self, reader, writer, canvas, letter, bool) -> None:
         self.reader = reader
         self.writer = writer
         self.canvas = canvas
         self.letter = letter
+        self.bool = bool
         self.input_pdf_reader = None
         self.output_pdf_writer = None
         self.existing_fields = None
-        self.output_pdf_path = 'test.pdf'
+        self.output_pdf_path = None
         self.input_pdf_path = None
         self.pdf_type = None
         self.auto_fill = False
         self.destination_file_py = None
+
+    def test_pdf(self, name):
+        snake_name = name.replace(' ', '_')
+        self.output_pdf_path = f'View_field_names_for_{snake_name}.pdf'
 
     def add_existing_fields(self,):
         with open(self.destination_file_py, 'r') as py_file:
@@ -25,9 +30,23 @@ class DocumentEditor:
         fx_text = '\n\n    def update_fields(self, case_information, existing_fields):'
         py_file = py_file + fx_text 
         for field in self.existing_fields:
-            text = f"\n        existing_fields['{field}'] = case_information."
+            field_text = self.existing_fields[field]
+            
+            text = f"\n        #{field}"
+            if '/FT' in field_text and '/Kids' in field_text:
+                # If the field has Children
+                print(f'Field {field} has kids')
+
+            elif '/FT' in field_text and field_text['/FT'] == '/Btn':
+                # If the field is a button
+                text = f"\n        existing_fields['{field}'] = self.bool(True)#{field}"
+
+            else:
+                # The field is just text
+                text = f"\n        existing_fields['{field}'] = 'field: {field}'"
+
             py_file = py_file + text
-        
+        py_file = py_file + f"\n\n\n\n'''{self.existing_fields}'''"
         with open(self.destination_file_py, 'w') as dest_file:
             dest_file.write(py_file)
 
@@ -54,6 +73,27 @@ class DocumentEditor:
         for page_num in range(len(self.input_pdf_reader.pages)):
             page = self.input_pdf_reader.pages[page_num]
             self.output_pdf_writer.add_page(page)
+
+    def get_pdf_type(self, name):
+        try:
+            snake_name = name.replace(' ', '_')
+            print(snake_name)
+            # Import the module dynamically
+            module_name = self.destination_file_py  # Replace 'module_name' with an appropriate module name
+            print(module_name)
+
+            with open(module_name, 'r') as file:
+                contents = file.read()
+            exec(contents, globals())
+            class_obj = globals()[snake_name]
+            # Create an instance of the class
+            self.pdf_type = class_obj()
+            self.pdf_type.bool = self.bool
+            print(self.pdf_type)
+            print('object instanced')
+
+        except Exception as e:
+            print(f"Error creating instance: {e}")
 
     def update_form_fields(self, case_information):
         self.pdf_type.update_fields(case_information, self.existing_fields)

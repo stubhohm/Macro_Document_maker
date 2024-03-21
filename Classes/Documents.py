@@ -6,7 +6,13 @@ name_sql = 'doc_name'
 doc_path_sql = 'doc_path'
 script_path_sql = 'script_path'
 
-c1 = "name = 'name'\naddress = 'Street_address'\ncity = 'City'"
+case_table = 'Case Table'
+client_name_sql = 'Client Name'
+case_info_path_sql = 'Case File Path'
+
+
+
+c1 = "\nblank = ''\nname = 'name'\naddress = 'Street_address'\ncity = 'City'"
 c2 = "\ncounty = 'County'\nstate = 'State'\nzip = 'Zip'\nbar_no = 'bar_no'\ntele = 'telephone'\nf_name = 'first_name'\nm_name = 'middle_name'"
 c3 = "\nl_name = 'last_name'\nrel = 'relation'\n\ncourt_county = 'Probate_Court_County'\ncourt_address = 'Court_address'"
 c4 ="\ncourt_tele = 'Court_Tele'\njudge ='Judge'\ndeat_cert_attach = 'death_cert_attached'\ndeath_cert_avail = 'death_cert_available'"
@@ -18,6 +24,7 @@ cls = "\n\nclass "
 init = "\n    def __init__(self,) -> None:"
 name = "\n        self.name ="
 path = "\n        self.doc_path ="
+bool = "\n        self.bool = None"
 
 
 
@@ -75,16 +82,15 @@ class Documentsdb():
             # Write the contents of the source file to the destination file
             dest_file.write(file_contents)
 
-        # Open the destination file for writing
+        # Open the destination file for writing of python script
         with open(self.destination_file_py, 'w') as dest_file:
             print(self.destination_file_py)
             # Write the contents of the source file to the destination file
-            text = constants + cls + snake_name + '():' + init + name + "'" + file_name + "'" + path + "'" + self.destination_file + "'"
+            text = constants + cls + snake_name + '():' + init + name + "'" + file_name + "'" + path + "'" + self.destination_file + "'" + bool
             dest_file.write(text)
 
     def set_to_db(self, template_name, file_path):
         ## Instance the new document
-        self.new_doc = self.doc_cls()
         self.make_local_copy(template_name, file_path)
         self.add_to_db(template_name)
         print('added to db')

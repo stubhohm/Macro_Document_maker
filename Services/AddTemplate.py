@@ -96,18 +96,42 @@ class AddTemplate():
         if self.nt_file_path:
             self.submit_new_template_button(nt_frame)
 
+    def return_to_main_menu(self):
+        self.template_submit = False
+        self.go_to_new_menu('Main_Screen')
+
+    def return_to_main_menu_button(self, root):
+        nt_frame = self.ttk.Frame(root)
+        nt_frame.pack(side='top', pady=10)       
+        main_menu_button = self.tk.Button(nt_frame, text='Return to Main Menu', command= lambda: self.return_to_main_menu())
+        main_menu_button.pack(padx=20, pady=20)
+
     def submit_current_template(self, documents, editor):
         if not self.template_submit:
             return
         self.get_new_template_data()    
         documents.set_to_db(self.nt_name, self.nt_file_path)
-        print(f'editor1: {editor}')
         editor.input_pdf_path, editor.destination_file_py = documents.destination_file, documents.destination_file_py
-        print(f'editor2: {editor}')
         editor.open_pdf()
+        print('opened')
         editor.get_fields()
+        print('got fields')
         editor.add_existing_fields()
+        print('added fields')
+        editor.get_pdf_type(self.nt_name)
+        print('got type')
+        editor.copy_pdf()
+        print('made copy')
+        editor.update_form_fields(None)
+        print('updated fields')
+        editor.fill_in_form()
+        print('filed in form')
+        editor.test_pdf(self.nt_name)
+        editor.output_new_doc()
+        print('output doc')
+        self.template_submit = False
         self.go_to_new_menu('Main_Screen')
+        print('returned to main menu')
 
     def open_file_dialog(self):
         self.nt_file_path = self.filedialog.askopenfilename(title="Select a File", filetypes=[("PDF files", "*.pdf"), ("All files", "*.*")])
@@ -117,6 +141,9 @@ class AddTemplate():
     def update_menu(self, root, menu_names, documents, editor, template_name ='Enter New Template Name'):
         # Gets a list of stored template names, used to prevent accidental overwriting or making two docs with the same name
         self.get_options(documents)
+        
+        #button to return to main menu
+        self.return_to_main_menu_button(root)
         
         # Field for entering new macro text and name 
         self.select_new_template_file(root, template_name)

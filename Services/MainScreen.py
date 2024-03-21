@@ -11,7 +11,10 @@ class MainScreen():
         self.target_menu = None
         self.options = []
 
-    def on_box_select(self):
+    def on_box_select(self, event):
+        print(event)
+        print(vars(event))
+        
         print('selected a thing')
 
     def on_new_template_select(self, menu_names):
@@ -33,7 +36,7 @@ class MainScreen():
     def display_doc_options(self, root):
         combo_box = self.ttk.Combobox(root, values=self.options)
         combo_box.set('Select an option')
-        combo_box.bind('<<ComboboxSelected>>', lambda: self.on_box_select())
+        combo_box.bind('<<ComboboxSelected>>', lambda event: self.on_box_select(event))
         combo_box.pack(pady=10)
 
     def update_menu(self, root, menu_names, documents, editor):
