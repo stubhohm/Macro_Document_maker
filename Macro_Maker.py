@@ -35,11 +35,11 @@ def close_application(user):
 
 def main():
     user = init_instances()
-    
     user.init_menus(menus, tk, ttk, messagebox, filedialog)
     
     # This is here to pick the starting screen for the ui_manager, the input coresponds to the '.name' in the screens in Services
     user.ui_mngr.select_menu('Main_Screen')
+
     while user.session.active:
         # Function looks at the active menu, and decides what input data that menu requests and returns that input
         user.select_input()
