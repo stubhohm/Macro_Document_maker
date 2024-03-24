@@ -10,12 +10,21 @@ class MainScreen():
         self.call_update = False
         self.target_menu = None
         self.options = []
+        self.selected_template = None
 
-    def on_box_select(self, event):
-        print(event)
-        print(vars(event))
-        
-        print('selected a thing')
+    def on_box_select(self, box):
+        self.selected_template = box.get()
+        print(f'selected {self.selected_template}')
+        self.go_to_new_menu('Add_Case_Info')
+
+    def refresh_screen(self):
+        self.target_menu = self.name
+        self.call_update = True
+
+    def go_to_new_menu(self, target_menu):
+        self.target_menu = target_menu
+        self.call_update = True
+        print(self.target_menu, self.call_update)
 
     def on_new_template_select(self, menu_names):
         for name in menu_names:
@@ -36,10 +45,10 @@ class MainScreen():
     def display_doc_options(self, root):
         combo_box = self.ttk.Combobox(root, values=self.options)
         combo_box.set('Select an option')
-        combo_box.bind('<<ComboboxSelected>>', lambda event: self.on_box_select(event))
+        combo_box.bind('<<ComboboxSelected>>', lambda event: self.on_box_select(combo_box))
         combo_box.pack(pady=10)
 
-    def update_menu(self, root, menu_names, documents, editor):
+    def menu_main(self, root, menu_names, documents, editor):
         # Gets list of stored template names
         self.get_options(documents)
         # Makes button and on click makes a request to update to add a new template

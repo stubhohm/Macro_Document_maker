@@ -7,6 +7,7 @@ class GUIManager():
         self.active_menu = None
         self.update_menu = True
         self.confirm_close_init = False
+        self.selected_template = None
 
     def clear_window(self):
         for widget in self.display.winfo_children():
@@ -50,7 +51,7 @@ class GUIManager():
             self.update_menu = False
             self.active_menu.call_update = False
             self.clear_window()
-            self.active_menu.update_menu(display, menu_names, input, editor)
+            self.active_menu.menu_main(display, menu_names, input, editor)
 
     def update_GUI(self, session, input, editor):
         # Init Confirmation box to prevent accidental closing the app early
@@ -62,6 +63,8 @@ class GUIManager():
         # Checks to see if an update was called in the window and reports that to the manager
         if isinstance(self.active_menu.call_update, bool):
             self.update_menu = self.active_menu.call_update
+        if isinstance(self.active_menu.selected_template, str) and self.active_menu.selected_template:
+            self.selected_template = self.active_menu.selected_template
         
         self.display.update()
         

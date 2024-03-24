@@ -15,7 +15,9 @@ from Classes.DocumentEditor import DocumentEditor
 from Services.GUIManager import GUIManager
 from Services.MainScreen import MainScreen
 from Services.AddTemplate import AddTemplate
-menus = [MainScreen, AddTemplate]
+from Services.AddCaseInfo import AddCaseInfo
+menus = [MainScreen, AddTemplate, AddCaseInfo]
+
 
 def init_instances():
     # UI Mngr houses the other screens and handles clearing and switching between screen displays

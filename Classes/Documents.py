@@ -6,26 +6,25 @@ name_sql = 'doc_name'
 doc_path_sql = 'doc_path'
 script_path_sql = 'script_path'
 
-case_table = 'Case Table'
-client_name_sql = 'Client Name'
-case_info_path_sql = 'Case File Path'
+case_table = 'Case_Table'
+client_name_sql = 'Client_Name'
+case_info_path_sql = 'Case_File_Path'
 
 
 
-c1 = "\nblank = ''\nname = 'name'\naddress = 'Street_address'\ncity = 'City'"
-c2 = "\ncounty = 'County'\nstate = 'State'\nzip = 'Zip'\nbar_no = 'bar_no'\ntele = 'telephone'\nf_name = 'first_name'\nm_name = 'middle_name'"
-c3 = "\nl_name = 'last_name'\nrel = 'relation'\n\ncourt_county = 'Probate_Court_County'\ncourt_address = 'Court_address'"
-c4 ="\ncourt_tele = 'Court_Tele'\njudge ='Judge'\ndeat_cert_attach = 'death_cert_attached'\ndeath_cert_avail = 'death_cert_available'"
-c5 ="\ncase_no = 'CASE NO'\nMCL = 'MCL_7003311'\nexisting_appt_rep = 'and the appointment has not been terminated  The personal representatives name and address are'"
-c6 = "\n\ndeath_date = 'date_of_death'\ndeath_time = 'time_of_death'\nwill_date = 'will_date'\n\nage_if_minor ='AGE_if_minor'"
-c7 = "\nlegal_dis = 'Legal_disability'\nlegal_rep ='REPRESENTED BY Name address and capacity'"
+c1 = "\nblank = ''\nname = 'Name'\naddress = 'Street Address'\ncity = 'City'"
+c2 = "\ncounty = 'County'\nstate = 'State'\nzip = 'Zip'\nbar_no = 'Bar Number'\ntele = 'Telephone'\nf_name = 'First Name'\nm_name = 'Middle Name'"
+c3 = "\nl_name = 'Last Name'\nrel = 'Relation'\n\ncourt_county = 'Probate Court County'\ncourt_address = 'Court Address'"
+c4 ="\ncourt_tele = 'Court Telephne'\njudge ='Judge'\ndeat_cert_attach = 'Death Cert Attached'\ndeath_cert_avail = 'Death Cert Available'"
+c5 ="\ncase_no = 'Case Number'\nMCL = 'MCL 7003311' \ncodicile_date = 'Codicil Date'\ncodicile_county = 'Codicile County'"
+c6 = "\n\ndeath_date = 'Date of Death'\ndeath_time = 'Time of Death'\nwill_date = 'Will Date'\n\nage_if_minor ='Age if Minor'"
+c7 = "\nlegal_dis = 'Legal Disability'\nlegal_rep ='REPRESENTED BY Name address and capacity'"
 constants = c1 + c2 + c3 + c4 + c5 + c6 + c7
 cls = "\n\nclass "
 init = "\n    def __init__(self,) -> None:"
 name = "\n        self.name ="
 path = "\n        self.doc_path ="
 bool = "\n        self.bool = None"
-
 
 
 class Documentsdb():
@@ -46,24 +45,48 @@ class Documentsdb():
         self.cursor.execute(f'''
             CREATE TABLE IF NOT EXISTS {docs_table} (
             {id_sql} INTEGER PRIMARY KEY,
-            {name_sql} TEXT NOT NULL,
+            {name_sql} TEXT NOT NULL UNIQUE,
             {doc_path_sql} TEXT NOT NULL,
             {script_path_sql} TEXT NOT NULL
             )                
         ''')
+        self.cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS {case_table} (
+            {id_sql} INTEGER PRIMARY KEY,
+            {client_name_sql} TEXT NOT NULL UNIQUE,
+            {case_info_path_sql} TEXT NOT NULL
+            )                
+        ''')
+
         self.connection.commit()
     
     def close_db(self):
         self.cursor.close()
         self.connection.close()
 
+    def get_local_doc_path(self, name):
+        get_query = f'SELECT {doc_path_sql} FROM {docs_table} WHERE {name_sql} = ?'
+        self.cursor.execute(get_query, (name,))
+        self.destination_file = self.cursor.fetchone()[0]
+
+    def get_local_py_path(self, name):
+        get_query = f'SELECT {script_path_sql} FROM {docs_table} WHERE {name_sql} = ?'
+        self.cursor.execute(get_query, (name,))
+        self.destination_file_py = self.cursor.fetchone()[0]
+
     def get_template_names(self):
         self.cursor.execute(f'SELECT {name_sql} FROM {docs_table}')
         return self.cursor.fetchall()
 
-    def add_to_db(self, name):
-        insert_query = f'INSERT INTO {docs_table} ({name_sql}, {doc_path_sql}, {script_path_sql}) VALUES (?, ?, ?)'
+    def add_to_doc_db(self, name):
+        insert_query = f'INSERT OR REPLACE INTO {docs_table} ({name_sql}, {doc_path_sql}, {script_path_sql}) VALUES (?, ?, ?)'
         self.cursor.execute(insert_query, (name, self.destination_file, self.destination_file_py,))
+        print('doc db added doc paths to db')
+        self.connection.commit()
+
+    def add_to_case_db(self, name):
+        insert_query = f'INSERT INTO {case_table} ({client_name_sql}, {case_info_path_sql}) VALUES (?, ?)'
+        self.cursor.execute(insert_query, (name, self.destination_file_py,))
         self.connection.commit()
 
     def make_local_copy(self, file_name, source_file):
@@ -92,7 +115,7 @@ class Documentsdb():
     def set_to_db(self, template_name, file_path):
         ## Instance the new document
         self.make_local_copy(template_name, file_path)
-        self.add_to_db(template_name)
+        self.add_to_doc_db(template_name)
         print('added to db')
 
     '''

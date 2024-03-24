@@ -1,75 +1,51 @@
+from Classes.Case_fields import case_name, attorney_info, applicant_info, filing_info, decedent_info, interested_person
+
 class CaseInformation:
-    def __init__(self) -> None:
-        pass
-    
-        self.case_name = ''
+    def __init__(self):
+        self.case_name = case_name
+        self.attorney_info = attorney_info
+        self.applicant_info = applicant_info
+        self.filing_info = filing_info
+        self.decedent_info = decedent_info
+        self.interested_person = interested_person
+        self.interested_persons = []
 
-        self.attorney_info = {
-        'name':'bitch_boi',
-        'Street_address': 'I am for the St',
-        'City': 'PoundTown', 
-        'State': 'Alabama', 
-        'Zip': '666999', 
-        'bar_no': "Wouldn't you like to know weather boi",
-        'telephone':'ask ur mom'
-    }
-        self.applicant_info = {
-        'first_name':'first',
-        'middle_name':'middle',
-        'last_name':'last',
-        'relation':'relation',
-        'Street_address': 'addy',
-        'City': 'city', 
-        'State': 'state', 
-        'Zip': '6699',
-        'telephone':'8675309' 
+        
+    def add_interested_person(self, person):
+        self.interested_persons.append(person)
+        
+    def get_full_address(self, person):
+        address_k = 'Street_address'
+        city_k = 'City'
+        state_k = 'State'
+        zip_k = 'Zip' 
+        add =  person[address_k]
+        city = person[city_k] 
+        state = person[state_k]
+        zip = person[zip_k]
+        full_add = add + '\n' + city + ', ' + state + ' ' + zip
+        return full_add
 
+    def get_full_name(self, person):
+        f_name = 'first_name'
+        m_name = 'middle_name'
+        l_name = 'last_name'
+        first_name = str(person[f_name])
+        middle_name = str(person[m_name])
+        last_name = str(person[l_name])
+        full_name = first_name + ' ' + middle_name + ' ' + last_name
+        return full_name
+        
+    def get_name_address_phone(self, person, bar = False):
+        phone_k = 'Telephone'
+        bar_k = 'Bar Number'
+        full_name = self.get_full_name(person) + '\n'
+        address = self.get_full_address(person) + '\n'
+        bar_no = ''
+        if bar:
+            bar_no = person[bar_k] + '\n'
+        full_name + bar_no + address + person[phone_k]
 
-    }
+    def get_attorney_info(self, attorney):
+        self.attorney_info = attorney
 
-        self.filing_info = {
-        'Probate_Court_County':'Something_Racist',
-        'Court_address':'Blaze it Blvd',
-        'Court_Tele': '420-6969',
-        'Judge':'xXxJudgeHaxorFaggotxXx',
-        'death_cert_attached':'Y/N',
-        'death_cert_available':'Y/N',
-        'CASE NO' :'696942069'
-
-    }
-
-        self.decedent_info = {
-        'first_name':'first',
-        'middle_name':'middle',
-        'last_name':'last',
-        'date_of_death':'date',
-        'time_of_death':'time',
-        'City':'City',
-        'County':'County',
-        'State':'State',
-        'will_date':'date',
-        'MCL_7003311': 'application'
-        }
-
-    
-
-        self.interested_person={
-    'name': 'name', 
-    'Street_address': 'addy',
-    'City': 'city', 
-    'State': 'state', 
-    'Zip': 'zip', 
-    'relation': 'relation', 
-    'AGE_if_minor': 'age if minor',
-    'Legal_disability': 'description',
-    'REPRESENTED BY Name address and capacity': ' rep', 
-
-    }
-
-        self.Interested_persons = [
-        self.interested_person,
-        self.interested_person,
-        self.interested_person,
-        self.interested_person,
-        self.interested_person,
-    ]
