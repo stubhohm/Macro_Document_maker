@@ -14,7 +14,6 @@ class MainScreen():
 
     def on_box_select(self, box):
         self.selected_template = box.get()
-        print(f'selected {self.selected_template}')
         self.go_to_new_menu('Add_Case_Info')
 
     def refresh_screen(self):
@@ -26,16 +25,13 @@ class MainScreen():
         self.call_update = True
         print(self.target_menu, self.call_update)
 
-    def on_new_template_select(self, menu_names):
-        for name in menu_names:
-            if name == 'Add_Template':
-                self.target_menu = name
-                self.call_update = True
-                return
-        print('Sorry, an Error Occured. Error Code: MSM2')
+    def on_new_template_select(self):
+        self.target_menu = 'Add_Template'
+        self.call_update = True
+    
 
-    def add_new_template_button(self, root, menu_names):
-        new_template_button = self.ttk.Button(root, text='Add New Template', command= lambda: self.on_new_template_select(menu_names))
+    def add_new_template_button(self, root):
+        new_template_button = self.ttk.Button(root, text='Add New Template', command= lambda: self.on_new_template_select())
         new_template_button.pack(pady=10)
         
     def get_options(self, documents):
@@ -48,10 +44,10 @@ class MainScreen():
         combo_box.bind('<<ComboboxSelected>>', lambda event: self.on_box_select(combo_box))
         combo_box.pack(pady=10)
 
-    def menu_main(self, root, menu_names, documents, editor):
+    def menu_main(self, root, documents, editor):
         # Gets list of stored template names
         self.get_options(documents)
         # Makes button and on click makes a request to update to add a new template
-        self.add_new_template_button(root, menu_names)
+        self.add_new_template_button(root)
         # Displays that list in a dropdown box
         self.display_doc_options(root)

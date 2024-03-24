@@ -14,6 +14,10 @@ class AddCaseInfo():
         self.required_fields = None
         self.case_name = None
         self.doc_inited = False
+        self.add_case = True
+        self.add_attorney = True
+        self.attorney_selected = None
+        self.case_selected = None
 
     def on_box_select(self, event):
         print(event)
@@ -21,26 +25,26 @@ class AddCaseInfo():
         
         print('selected a thing')
 
-    def on_new_template_select(self, menu_names):
-        for name in menu_names:
-            if name == 'Add_Template':
-                self.target_menu = name
-                self.call_update = True
-                return
-        print('Sorry, an Error Occured. Error Code: MSM2')
+    def on_new_attorney_select(self):
+        self.add_attorney = True
+        self.refresh_screen()
 
-    def add_new_template_button(self, root, menu_names):
-        new_template_button = self.ttk.Button(root, text='Add New Template', command= lambda: self.on_new_template_select(menu_names))
-        new_template_button.pack(pady=10)
-        
-    def get_options(self, documents):
-        self.options = documents.get_template_names()
-        
-    def display_doc_options(self, root):
-        combo_box = self.ttk.Combobox(root, values=self.options)
-        combo_box.set('Select an option')
+    def on_new_case_select(self):
+        self.add_case = True
+        self.refresh_screen()
+
+    def add_new_case_or_attorney_button(self, root):
+        new_case_button = self.ttk.Button(root, text='Add New Case', command= lambda: self.on_new_case_select())
+        new_case_button.pack(pady=10)
+        new_attorney_button = self.ttk.Button(root, text='Add New Attorney', command= lambda: self.on_new_attorney_select())
+        new_attorney_button.pack(pady=10)
+   
+    def display_options(self, root, options, selection_type):
+        combo_box = self.ttk.Combobox(root, values=options)
+        combo_box.set(f'Select an {selection_type}')
         combo_box.bind('<<ComboboxSelected>>', lambda event: self.on_box_select(event))
         combo_box.pack(pady=10)
+        return combo_box
 
     def refresh_screen(self):
         self.target_menu = self.name
@@ -53,35 +57,51 @@ class AddCaseInfo():
     def get_called_document(self, documents, editor):
         if self.doc_inited:
             return
-        print(f'selected template {self.selected_template}')
         documents.get_local_doc_path(self.selected_template)
         documents.get_local_py_path(self.selected_template)
         editor.input_pdf_path = documents.destination_file
         editor.destination_file_py = documents.destination_file_py
         editor.doc_name = self.selected_template
         editor.open_pdf()
-        print('open')
         editor.copy_pdf()
-        print('copy')
         editor.get_fields()
-        print('fields')
         editor.get_pdf_type()
-        print('type')
         self.doc_inited = True
-        print('opened and primed')
 
-    def menu_main(self, root, menu_names, input, editor):
+    def get_stored_case_names(self, documents, root):
+        names = documents.get_case_names()
+        self.case_selected = self.display_options(root, names, 'Case Name')
+
+    def get_stored_attorney_names(self, documents, root):
+        names = documents.get_attorney_names()
+        self.attorney_selected = self.display_options(root, names, 'Attorney')
+
+    def header_and_return_to_main(self, root):
+        header = self.ttk.Label(root, text=f'Filling out {self.selected_template} template.')
+        header.pack() 
+        main_menu_button = self.ttk.Button(root, text='Return to Main Menu', command= lambda: self.go_to_new_menu('Main_Screen'))
+        main_menu_button.pack(pady=10)
+
+    def menu_main(self, root, input, editor):
         documents = input[0]
         self.selected_template = input[1]
-        # Make a copy of the selected pdf
-        self.get_called_document(documents, editor)
         
-        # Get that pdfs template filling script
-
+        # Make a copy of the selected pdf and get related scripts and files
+        self.get_called_document(documents, editor)
+        header_frame = self.ttk.Frame(root)
+        header_frame.pack()
+        self.header_and_return_to_main(header_frame)
+        first_frame = self.ttk.Frame(root)
+        first_frame.pack()
         # Query the user for case info by case name via drop down box
-
+        self.get_stored_case_names(documents, first_frame)
+        
         # Query the user for attorney info via drop down box
+        self.get_stored_attorney_names(documents, first_frame)
 
+        second_frame = self.ttk.Frame(root)
+        second_frame.pack(fill = 'x')
+        self.add_new_case_or_attorney_button(second_frame)
         # Fill in doc button
 
         # Fill in is done find all boxes that have '' as their input and add them to a list
@@ -89,30 +109,3 @@ class AddCaseInfo():
         # update case info with filled in fields
 
         # publish doc
-        '''
-        editor.get_fields()
-        print('got fields')
-        editor.add_existing_fields()
-        print('added fields')
-        editor.get_pdf_type(self.nt_name)
-        print('got type')
-        editor.copy_pdf()
-        print('made copy')
-        editor.update_form_fields(None)
-        print('updated fields')
-        editor.fill_in_form()
-        print('filed in form')
-        editor.test_pdf()
-        editor.output_new_doc()
-        print('output doc')
-        self.template_submit = False
-        self.go_to_new_menu('Main_Screen')
-        print('returned to main menu')
-        
-        # Gets list of stored template names
-        self.get_options(documents)
-        # Makes button and on click makes a request to update to add a new template
-        self.add_new_template_button(root, menu_names)
-        # Displays that list in a dropdown box
-        self.display_doc_options(root)
-        '''

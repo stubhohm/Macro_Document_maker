@@ -143,12 +143,9 @@ class DocumentEditor:
         return text
 
     def replace_place_holders(self, entries, progress, bar_size):
-        print("start replacement")
         for i, entry in enumerate(entries):
             field_name, var = entry['field'], entry['var'].get()
-            print(f'Field: {field_name} Selected Output: {var}')
             text = self.make_field_text(var)
-            print(f'New Text: {text}')
             old_string = f"'field: {field_name}'"
             self.py_file_text = self.py_file_text.replace(old_string, text)
             progress['value'] = i
@@ -168,13 +165,13 @@ class DocumentEditor:
                 # If the field has Children
                 print(f'{field_text}')
 
-            if '/FT' in field_text and field_text['/FT'] == '/Btn':
+            elif '/FT' in field_text and field_text['/FT'] == '/Btn':
                 # If the field is a button
                 text = f"\n        existing_fields['{field}'] = self.bool(True)#{field}"
 
             else:
                 # The field is just text
-                text = f"\n        existing_fields['{field}'].update(" +'{' + f"'/V': 'field: {field}'" + '})'
+                text = f"\n        existing_fields['{field}'] = 'field: {field}'"
 
             self.py_file_text = self.py_file_text + text
         self.write_py_file()

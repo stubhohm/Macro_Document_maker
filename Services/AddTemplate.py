@@ -25,6 +25,7 @@ class AddTemplate():
         self.entries =[]
         self.define_fields = False
         self.submit_fields = False
+        self.selected_template = None
 
     def clear_window(self, root):
         for widget in root.winfo_children():
@@ -249,7 +250,7 @@ class AddTemplate():
         # Find replace text with inputs given in self.entries
         editor.replace_place_holders(self.entries, progress_bar, len_of_bar)
 
-    def menu_main(self, root, menu_names, documents, editor, template_name ='Enter New Template Name'):
+    def menu_main(self, root, documents, editor, template_name ='Enter New Template Name'):
         # If submition is valid and called, these functions will run.
         self.submit_defined_fields(root, documents, editor)
         if self.submit_fields:

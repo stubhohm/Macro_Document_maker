@@ -1,6 +1,6 @@
 db_path = 'documents.db'
-docs_table = 'DocumentsTable'
 
+docs_table = 'DocumentsTable'
 id_sql = 'id'
 name_sql = 'doc_name'
 doc_path_sql = 'doc_path'
@@ -9,6 +9,10 @@ script_path_sql = 'script_path'
 case_table = 'Case_Table'
 client_name_sql = 'Client_Name'
 case_info_path_sql = 'Case_File_Path'
+
+attorney_table = 'Attorney_Table'
+attorney_name_sql = 'Attorney_Name'
+attorney_info_path_sql = 'Attorney_info_path'
 
 
 
@@ -19,7 +23,7 @@ c4 ="\ncourt_tele = 'Court Telephne'\njudge ='Judge'\ndeat_cert_attach = 'Death 
 c5 ="\ncase_no = 'Case Number'\nMCL = 'MCL 7003311' \ncodicile_date = 'Codicil Date'\ncodicile_county = 'Codicile County'"
 c6 = "\n\ndeath_date = 'Date of Death'\ndeath_time = 'Time of Death'\nwill_date = 'Will Date'\n\nage_if_minor ='Age if Minor'"
 c7 = "\nlegal_dis = 'Legal Disability'\nlegal_rep ='REPRESENTED BY Name address and capacity'"
-constants = c1 + c2 + c3 + c4 + c5 + c6 + c7
+constants = ''
 cls = "\n\nclass "
 init = "\n    def __init__(self,) -> None:"
 name = "\n        self.name ="
@@ -57,6 +61,13 @@ class Documentsdb():
             {case_info_path_sql} TEXT NOT NULL
             )                
         ''')
+        self.cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS {attorney_table} (
+            {id_sql} INTEGER PRIMARY KEY,
+            {attorney_name_sql} TEXT NOT NULL UNIQUE,
+            {attorney_info_path_sql} TEXT NOT NULL
+            )                
+        ''')
 
         self.connection.commit()
     
@@ -76,6 +87,14 @@ class Documentsdb():
 
     def get_template_names(self):
         self.cursor.execute(f'SELECT {name_sql} FROM {docs_table}')
+        return self.cursor.fetchall()
+
+    def get_case_names(self):
+        self.cursor.execute(f'SELECT {client_name_sql} from {case_table}')
+        return self.cursor.fetchall()
+    
+    def get_attorney_names(self):
+        self.cursor.execute(f'SELECT {attorney_name_sql} from {attorney_table}')
         return self.cursor.fetchall()
 
     def add_to_doc_db(self, name):

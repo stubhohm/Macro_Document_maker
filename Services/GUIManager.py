@@ -40,25 +40,24 @@ class GUIManager():
 
     def select_menu(self, menu_name):
         if self.update_menu:
-            print(menu_name)
             for menu in self.menus:
                 if menu.name == menu_name:
                     break
             self.active_menu = menu
 
-    def set_menu(self, display, menu_names, input, editor):
+    def set_menu(self, display, input, editor):
         if self.update_menu:
             self.update_menu = False
             self.active_menu.call_update = False
             self.clear_window()
-            self.active_menu.menu_main(display, menu_names, input, editor)
+            self.active_menu.menu_main(display, input, editor)
 
     def update_GUI(self, session, input, editor):
         # Init Confirmation box to prevent accidental closing the app early
         self.init_confirm_close(session)
         
         # Sets the menu and after an update is called, refreshes the display format
-        self.set_menu(self.display, self.menu_names, input, editor)
+        self.set_menu(self.display, input, editor)
         
         # Checks to see if an update was called in the window and reports that to the manager
         if isinstance(self.active_menu.call_update, bool):
