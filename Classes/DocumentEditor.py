@@ -230,8 +230,16 @@ class DocumentEditor:
         with open(self.output_pdf_path, "wb") as output_file:
             self.output_pdf_writer.write(output_file)
 
-    def make_new_case_file():
-        case_info_directory = 'Classes\\Doc_types\\CaseInformation.py'
-        with open(case_info_directory, 'r') as output_file:
-            case_info_copy = output_file.read()
+    def make_new_case_file(self, name):
+        case_info_directory = 'Classes\\CaseInformation.py'
+        case_dest = ''
+        self.destination_file_py = '\\Classes\\DocumentEditor.py'
+        self.open_py_file()
+
+    def make_new_attorney_doc(self, name):
+        att_info_directory = 'Classes\\AttorneyInformation.py'
+        att_dest = ''
+        self.destination_file_py = '\\Classes\\DocumentEditor.py'
+        self.open_py_file()
+        
         

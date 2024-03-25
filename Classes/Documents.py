@@ -108,6 +108,11 @@ class Documentsdb():
         self.cursor.execute(insert_query, (name, self.destination_file_py,))
         self.connection.commit()
 
+    def add_attorney_to_db(self, name, path):
+        insert_query = f'INSERT INTO {attorney_table} ({attorney_name_sql}, {attorney_info_path_sql}) VALUES (?, ?)'
+        self.cursor.execute(insert_query, (name, path,))
+        self.connection.commit()
+
     def make_local_copy(self, file_name, source_file):
         snake_name = file_name.replace(' ', '_')
         with open(source_file, 'rb') as src_file:
