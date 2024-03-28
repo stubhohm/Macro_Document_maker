@@ -17,6 +17,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore program created docs
+**/Classes/Doc_types/
+
 # Distribution / packaging
 .Python
 build/
