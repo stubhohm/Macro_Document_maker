@@ -71,12 +71,13 @@ class ConstructDocument():
             if 'case_information.' not in line:
                 continue
             for type in info_types:
-                if type[1][1] not in line:
+                print(type[1])
+                if type[1] not in line:
                     continue
-                for key in type[1][0].keys():
+                for key in type[0].keys():
                     if key not in line:
                         continue
-                    query = [type[1][0]][key]
+                    query = [type[1], key]
                     if query in called_information:
                         continue
                     called_information.append(query)
