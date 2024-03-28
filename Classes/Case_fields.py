@@ -48,8 +48,6 @@ decedent_info = {
         'MCL 7003311': ' '
         }
 
-    
-
 interested_person={
     'Name': ' ', 
     'Street Address': ' ',

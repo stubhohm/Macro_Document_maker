@@ -1,3 +1,5 @@
+from Classes.Case_fields import case_name, attorney_info, applicant_info, filing_info, decedent_info, interested_person
+
 name = 'Name'
 address = 'Street Address'
 city = 'City'
@@ -29,6 +31,7 @@ will_date = 'Will Date'
 age_if_minor ='Age if Minor'
 legal_dis = 'Legal Disability'
 legal_rep ='REPRESENTED BY Name address and capacity'
+
 keys = [name, 
         address, 
         city, 
@@ -128,6 +131,10 @@ class DocumentEditor:
                 text = text + key_name + ']'
                 return text
 
+    def make_snake(self, text):
+        snake_name = text.replace(' ', '_')
+        return snake_name
+
     def make_field_text(self, definition):
         text = 'case_information.'
         # Sets un marked sections to be empty
@@ -194,11 +201,9 @@ class DocumentEditor:
 
     def get_pdf_type(self):
         try:
-            snake_name = self.doc_name.replace(' ', '_')
-            print(snake_name)
+            snake_name = self.make_snake(self.doc_name)
             # Import the module dynamically
             module_name = self.destination_file_py
-            print(module_name)
 
             with open(module_name, 'r') as file:
                 contents = file.read()
@@ -230,16 +235,65 @@ class DocumentEditor:
         with open(self.output_pdf_path, "wb") as output_file:
             self.output_pdf_writer.write(output_file)
 
-    def make_new_case_file(self, name):
+    def make_new_case_file_copy(self):
         case_info_directory = 'Classes\\CaseInformation.py'
-        case_dest = ''
-        self.destination_file_py = '\\Classes\\DocumentEditor.py'
+        self.destination_file_py = case_info_directory
         self.open_py_file()
+        case_info_new_directory = 'Classes\\Doc_types\\Case_'
+        self.destination_file_py = case_info_new_directory
 
-    def make_new_attorney_doc(self, name):
+    def make_new_case_dictionary(self, case_name):
+        fx_header = '    def update_dictionary(self):'
+        line_header = "\n        self."
+        self.py_file_text += '\n\n' + fx_header + line_header + f"name = '{case_name}'"
+        line_groups = [[applicant_info,"applicant_info['"], [filing_info,"filing_info['"], [decedent_info, "decedent_info['"], [interested_person,"interested_person['"]]
+        for item in line_groups:
+            line_subtype_text = item[1]
+            line_sub_type = item[0]
+            for key in line_sub_type.keys():
+                output_line = line_header + line_subtype_text + key + "'] = ''"
+                self.py_file_text+= output_line
+        snake_name = self.make_snake(case_name)
+        self.destination_file_py += snake_name + '.py'
+        
+    def make_new_attorney_doc_copy(self):
         att_info_directory = 'Classes\\AttorneyInformation.py'
-        att_dest = ''
-        self.destination_file_py = '\\Classes\\DocumentEditor.py'
+        self.destination_file_py = att_info_directory
         self.open_py_file()
-        
-        
+        case_info_new_directory = 'Classes\\Doc_types\\Att_'
+        self.destination_file_py = case_info_new_directory
+
+    def define_attorney_dictionary(self, attorney_information):
+        fx_header = '    def update_dictionary(self):'
+        key_identifier = "\n        self.attorney_info['"
+        new_text = '\n\n'
+        new_text += fx_header
+        pre_loop = new_text
+        for key in attorney_information.keys():
+            output_line = key_identifier + key + f"'] = '{attorney_information[key]}'"
+            new_text +=output_line
+        if pre_loop == new_text:
+            new_text = ''
+        self.py_file_text += new_text
+        name = attorney_information['Name']
+        snake_name = self.make_snake(name)
+        self.destination_file_py += snake_name + '.py'
+
+    def update_attorney_doc(self, new_attorney_information, old_attorney_information):
+        line_start = '\n        self.attorney_info['
+        for key in new_attorney_information.keys():
+            old_value, new_value = old_attorney_information[key], new_attorney_information[key]
+            old_text = line_start + key + f"'] = '{old_value}'"
+            new_text = line_start + key + f"'] = '{new_value}'"
+            self.py_file_text = self.py_file_text.replace(old_text, new_text)
+
+    def remove_file(self):
+        file_path = self.destination_file_py
+        try:
+            with open(file_path, 'w'):
+                pass
+            print(f'File {file_path} successfully deleted.')
+        except FileNotFoundError:
+            print(f'File {file_path} not found.')
+        except Exception as e:
+            print(f'Error deleting file {file_path}: {e}')

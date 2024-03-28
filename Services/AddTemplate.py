@@ -83,6 +83,17 @@ class AddTemplate():
         
     def get_options(self, documents):
         self.options = documents.get_template_names()
+        print(self.options)
+        holder = []
+        for option in self.options:
+            print(f'before {option}')
+            if not isinstance(option, str):
+                option = option[0]
+            option = option.strip('{')
+            option = option.strip('}')
+            print(f'after {option}')
+            holder.append(option)
+        self.options = holder
 
     def select_new_template_file(self, root, template_name):
         if self.nt_file_path:
@@ -115,27 +126,22 @@ class AddTemplate():
 
     def submit_current_template(self, documents, editor):
         if not self.template_submit:
-            return   
-        documents.set_to_db(self.nt_name, self.nt_file_path)
+            return 
+        name = self.nt_name
+        path = self.nt_file_path 
+        documents.set_to_db(name, path)
         editor.input_pdf_path, editor.destination_file_py = documents.destination_file, documents.destination_file_py
-        editor.doc_name = self.nt_name
+        editor.doc_name = name
         editor.open_pdf()
-        print('opened')
         editor.get_fields()
-        print('got fields')
         editor.add_existing_fields()
-        print('added fields')
         editor.get_pdf_type()
         print(editor.pdf_type)
         editor.copy_pdf()
-        print('made copy')
         editor.update_form_fields(None)
-        print('updated fields')
         editor.fill_in_form()
-        print('filed in form')
         editor.test_pdf()
         editor.output_new_doc()
-        print('output doc')
         self.template_submit = False
         self.define_fields = True
         self.refresh_screen()

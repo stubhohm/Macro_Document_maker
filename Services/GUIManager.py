@@ -8,6 +8,8 @@ class GUIManager():
         self.update_menu = True
         self.confirm_close_init = False
         self.selected_template = None
+        self.selected_case = None
+        self.selected_attorney = None
 
     def clear_window(self):
         for widget in self.display.winfo_children():

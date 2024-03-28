@@ -47,6 +47,6 @@ class CaseInformation:
         full_name + bar_no + address + person[phone_k]
 
     def get_attorney_info(self, attorney):
-        self.attorney_info = attorney
+        self.attorney_info = attorney.attorney_info
 
     # Editable Below This Comment

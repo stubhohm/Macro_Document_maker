@@ -50,7 +50,6 @@ def main():
         user.ui_mngr.select_menu(user.ui_mngr.active_menu.target_menu)
     close_application(user)
         
-
 if __name__ == "__main__":
     
     main()

@@ -76,9 +76,12 @@ class Documentsdb():
         self.connection.close()
 
     def get_local_doc_path(self, name):
+        print(f'geting name {name}')
         get_query = f'SELECT {doc_path_sql} FROM {docs_table} WHERE {name_sql} = ?'
         self.cursor.execute(get_query, (name,))
-        self.destination_file = self.cursor.fetchone()[0]
+        path = self.cursor.fetchone()
+        print(f'getting path {path}')
+        self.destination_file = path[0]
 
     def get_local_py_path(self, name):
         get_query = f'SELECT {script_path_sql} FROM {docs_table} WHERE {name_sql} = ?'
@@ -98,20 +101,37 @@ class Documentsdb():
         return self.cursor.fetchall()
 
     def add_to_doc_db(self, name):
+        print(f'setting dest: {self.destination_file_py}')
+        print(f'setting doc_path {self.destination_file}')
+        print(f'settting name {name}')
         insert_query = f'INSERT OR REPLACE INTO {docs_table} ({name_sql}, {doc_path_sql}, {script_path_sql}) VALUES (?, ?, ?)'
         self.cursor.execute(insert_query, (name, self.destination_file, self.destination_file_py,))
-        print('doc db added doc paths to db')
         self.connection.commit()
 
     def add_to_case_db(self, name):
-        insert_query = f'INSERT INTO {case_table} ({client_name_sql}, {case_info_path_sql}) VALUES (?, ?)'
+        insert_query = f'INSERT OR REPLACE INTO {case_table} ({client_name_sql}, {case_info_path_sql}) VALUES (?, ?)'
+        self.cursor.execute(insert_query, (name, self.destination_file_py,))
+        self.connection.commit()
+    
+    def get_case_path(self, name):
+        get_query = f'SELECT {case_info_path_sql} FROM {case_table} WHERE {client_name_sql} = ?'
+        self.cursor.execute(get_query, (name,))
+        self.destination_file_py = self.cursor.fetchone()[0]
+
+    def add_attorney_to_db(self, name):
+        insert_query = f'INSERT OR REPLACE INTO {attorney_table} ({attorney_name_sql}, {attorney_info_path_sql}) VALUES (?, ?)'
         self.cursor.execute(insert_query, (name, self.destination_file_py,))
         self.connection.commit()
 
-    def add_attorney_to_db(self, name, path):
-        insert_query = f'INSERT INTO {attorney_table} ({attorney_name_sql}, {attorney_info_path_sql}) VALUES (?, ?)'
-        self.cursor.execute(insert_query, (name, path,))
-        self.connection.commit()
+    def get_attorney_path(self, name):
+        get_query = f'SELECT {attorney_info_path_sql} FROM {attorney_table} WHERE {attorney_name_sql} = ?'
+        self.cursor.execute(get_query, (name,))
+        try:
+            self.destination_file_py = self.cursor.fetchone()[0]
+        except Exception as e:
+            print(f'No Attorney File Found due to {e}')
+            self.destination_file_py = None
+        print(self.destination_file_py)
 
     def make_local_copy(self, file_name, source_file):
         snake_name = file_name.replace(' ', '_')
@@ -142,17 +162,20 @@ class Documentsdb():
         self.add_to_doc_db(template_name)
         print('added to db')
 
-    '''
-    TODO
-    def remove_from_db(self):
-    
-
-    def rename(self):
+    def remove_attorney_from_db(self, name):
+        print(name)
+        query = f'DELETE FROM {attorney_table} WHERE {attorney_name_sql} = ?'
+        self.cursor.execute(query, (name,))
+        self.connection.commit()
+        print('removed from db')
+        return
+'''
+    def rename_attorney(self, editor, old_name, new_name, file_path):
         self.set_to_db(new_name, file_path)
         self.empty_new_py()
         self.populate_new_py()
-        self.remove_from_db()'''
-
+        self.remove_attorney_from_db(old_name)
+'''
     
 
     
