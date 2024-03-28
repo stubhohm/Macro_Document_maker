@@ -9,6 +9,7 @@ class AddCaseInfo():
         self.ttk = ttk
         self.messagebox = messagebox
         self.filedialog = filedialog
+        self.critical_error = False
         self.call_update = False
         self.target_menu = None
         self.options = []
@@ -31,15 +32,15 @@ class AddCaseInfo():
         self.case_selected = None
         self.fill_in_doc = False
 
+    def critical_fail(self):
+        self.critical_error = True
+        self.go_to_new_menu(self.name)
+
     def on_box_select(self, selection_type):
         if selection_type == 'Attorney':
             self.attorney_selected = self.attorney_box.get()
-            print(type(self.attorney_selected))
-            print(f'attorny {self.attorney_selected}')
         else:
             self.case_selected = self.case_box.get()
-            print(self.case_selected)
-
 
     def refresh_screen(self):
         self.target_menu = self.name
@@ -69,6 +70,9 @@ class AddCaseInfo():
         editor.destination_file_py = data_base.destination_file_py
         editor.doc_name = self.selected_template
         editor.open_pdf()
+        if not editor.input_pdf_reader:
+            self.critical_fail()
+            return
         editor.copy_pdf()
         editor.get_fields()
         editor.get_pdf_type()
@@ -162,8 +166,6 @@ class AddCaseInfo():
     def get_fields(self):
         att_dict = attorney_info
         if isinstance(self.att_fields, dict):
-            print(f'dict att: {self.att_fields}')
-            print(type(self.att_fields))
             self.sub_att = True
             return
         for item in self.att_fields:
@@ -186,8 +188,6 @@ class AddCaseInfo():
         editor.define_attorney_dictionary(self.att_fields)
         editor.write_py_file()
         data_base.destination_file_py = editor.destination_file_py
-        print('path')
-        print(data_base.destination_file_py)
         data_base.add_attorney_to_db(self.att_fields['Name'])
         self.sub_att, self.add_attorney, self.update_attorney = False, False, False
         self.refresh_screen()
@@ -199,6 +199,9 @@ class AddCaseInfo():
         editor.destination_file_py = data_base.destination_file_py
         editor.open_py_file()
         text = editor.py_file_text
+        if not text:
+            self.critical_fail()
+            return
         for i, key in enumerate(attorney_info.keys()):
             print(f'key {key}')
             entry = self.att_fields[i]
@@ -276,8 +279,23 @@ class AddCaseInfo():
     
     def on_fill_in_doc(self):
         self.fill_in_doc = True
-        self.attorney_selected = self.attorney_selected.get()
-        self.case_selected = self.case_selected.get()
+        self.attorney_selected = self.attorney_box.get()
+        self.case_selected = self.case_box.get()
+        text = None
+        if self.case_selected == 'Select an Case Name':
+            text = 'a case file'
+        if self.attorney_selected == 'Select an Attorney':
+            att_text = 'an attorney'
+            if text:
+                text += f', and {att_text}'
+            else: 
+                text = att_text
+        if text:
+            text = f'You must select {text} to begin formatting a document'
+            print(text)
+            self.refresh_screen()
+            return
+        
         print('filling in doc')
         self.refresh_screen()
 
@@ -304,16 +322,13 @@ class AddCaseInfo():
             self.update_attorney = False
             self.refresh_screen()
             return
-        print(attorney_selected)
         data_base.get_attorney_path(attorney_selected)
         editor.destination_file_py = data_base.destination_file_py
         editor.remove_file()
         data_base.remove_attorney_from_db(attorney_selected)
 
     def on_delete_case_submit(self, data_base, editor):
-        print('deleting a case')
         case_selected = self.case_selected.get()
-        print(case_selected)
         data_base.get_case_path(case_selected)
         editor.destination_file_py = data_base.destination_file_py 
 

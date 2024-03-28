@@ -13,6 +13,7 @@ class AddTemplate():
         self.ttk = ttk
         self.messagebox = messagebox
         self.filedialog = filedialog
+        self.critical_error = False
         self.call_update = False
         self.target_menu = None
         self.show_help = False
@@ -26,6 +27,10 @@ class AddTemplate():
         self.define_fields = False
         self.submit_fields = False
         self.selected_template = None
+
+    def critical_fail(self):
+        self.critical_error = True
+        self.go_to_new_menu(self.name)
 
     def clear_window(self, root):
         for widget in root.winfo_children():
@@ -83,15 +88,12 @@ class AddTemplate():
         
     def get_options(self, documents):
         self.options = documents.get_template_names()
-        print(self.options)
         holder = []
         for option in self.options:
-            print(f'before {option}')
             if not isinstance(option, str):
                 option = option[0]
             option = option.strip('{')
             option = option.strip('}')
-            print(f'after {option}')
             holder.append(option)
         self.options = holder
 
@@ -133,10 +135,12 @@ class AddTemplate():
         editor.input_pdf_path, editor.destination_file_py = documents.destination_file, documents.destination_file_py
         editor.doc_name = name
         editor.open_pdf()
+        if not editor.input_pdf_reader:
+            self.critical_fail()
+            return
         editor.get_fields()
         editor.add_existing_fields()
         editor.get_pdf_type()
-        print(editor.pdf_type)
         editor.copy_pdf()
         editor.update_form_fields(None)
         editor.fill_in_form()
@@ -252,7 +256,10 @@ class AddTemplate():
         editor.input_pdf_path = documents.destination_file_py
         # Open Script doc
         editor.open_py_file()
-        
+        if not editor.py_file_text:
+            self.critical_fail()
+            return
+                
         # Find replace text with inputs given in self.entries
         editor.replace_place_holders(self.entries, progress_bar, len_of_bar)
 

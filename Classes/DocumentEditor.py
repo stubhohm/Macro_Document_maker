@@ -84,9 +84,13 @@ class DocumentEditor:
         self.output_pdf_path = f'View_field_names_for_{snake_name}.pdf'
 
     def open_py_file(self):
-        with open(self.destination_file_py, 'r') as py_file:
-            py_file = py_file.read()
-        self.py_file_text = py_file
+        self.py_file_text = None
+        try:    
+            with open(self.destination_file_py, 'r') as py_file:
+                py_file = py_file.read()
+            self.py_file_text = py_file
+        except Exception as e:
+            print(f'Error opening python file {e}')
 
     def write_py_file(self):
         with open(self.destination_file_py, 'w') as dest_file:
@@ -185,7 +189,11 @@ class DocumentEditor:
 
     def open_pdf(self):
         # Step 1: Open and Read the PDF Document
-        self.input_pdf_reader = self.reader(open(self.input_pdf_path, "rb"))
+        self.input_pdf_reader = None
+        try:
+            self.input_pdf_reader = self.reader(open(self.input_pdf_path, "rb"))
+        except Exception as e:
+            print(f"Error opening pdf {e}")
         
     def get_fields(self):
         self.existing_fields = self.input_pdf_reader.get_fields()

@@ -108,7 +108,7 @@ class Documentsdb():
         self.cursor.execute(insert_query, (name, self.destination_file, self.destination_file_py,))
         self.connection.commit()
 
-    def add_to_case_db(self, name):
+    def add_case_to_db(self, name):
         insert_query = f'INSERT OR REPLACE INTO {case_table} ({client_name_sql}, {case_info_path_sql}) VALUES (?, ?)'
         self.cursor.execute(insert_query, (name, self.destination_file_py,))
         self.connection.commit()
@@ -116,7 +116,12 @@ class Documentsdb():
     def get_case_path(self, name):
         get_query = f'SELECT {case_info_path_sql} FROM {case_table} WHERE {client_name_sql} = ?'
         self.cursor.execute(get_query, (name,))
-        self.destination_file_py = self.cursor.fetchone()[0]
+        try:
+            self.destination_file_py = self.cursor.fetchone()[0]
+        except Exception as e:
+            print(f'No Case File Found due to {e}')
+            self.destination_file_py = None
+        print(self.destination_file_py)
 
     def add_attorney_to_db(self, name):
         insert_query = f'INSERT OR REPLACE INTO {attorney_table} ({attorney_name_sql}, {attorney_info_path_sql}) VALUES (?, ?)'
