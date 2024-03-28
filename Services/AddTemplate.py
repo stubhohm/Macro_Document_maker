@@ -27,6 +27,8 @@ class AddTemplate():
         self.define_fields = False
         self.submit_fields = False
         self.selected_template = None
+        self.attorney_selected = None
+        self.case_selected = None
 
     def critical_fail(self):
         self.critical_error = True
@@ -204,11 +206,11 @@ class AddTemplate():
             check_false = self.tk.BooleanVar(value=False)
             check_text = 'Leave blank by default'
             check_box = self.ttk.Checkbutton(row_frame, text=check_text, variable=check_false)
-            check_box.pack(side='left', padx=(0,0))
+            #check_box.pack(side='left', padx=(0,0))
             # Make an drop down 
             var = self.tk.StringVar()
             option_menu = self.ttk.OptionMenu(row_frame, var, 'Case Information Fields')
-            option_menu.pack()
+            option_menu.pack(side = 'left')
             menu = option_menu['menu']
             self.add_cascades(menu, 'None', None, var)
             self.add_cascades(menu, 'Attorney', attorney_info, var)

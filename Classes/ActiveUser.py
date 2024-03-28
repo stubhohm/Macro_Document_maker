@@ -1,6 +1,8 @@
 main_screen = 'Main_Screen'
 add_template = 'Add_Template'
 add_case_info = 'Add_Case_Info'
+construct_doc = 'Construct_Document'
+
 class ActiveUser:
     def __init__(self, session, docs, ui_mngr, editor):
         self.session = session
@@ -23,3 +25,6 @@ class ActiveUser:
             self.input_data = self.docs
         if name == add_case_info:
             self.input_data = [self.docs, self.ui_mngr.selected_template] 
+        if name == construct_doc:
+            ui = self.ui_mngr
+            self.input_data = [ui.selected_attorney, ui.selected_template, ui.selected_case, self.docs]

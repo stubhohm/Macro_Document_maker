@@ -66,6 +66,10 @@ class GUIManager():
             self.update_menu = self.active_menu.call_update
         if isinstance(self.active_menu.selected_template, str) and self.active_menu.selected_template:
             self.selected_template = self.active_menu.selected_template
+        if isinstance(self.active_menu.attorney_selected, str) and self.active_menu.attorney_selected:    
+            self.selected_attorney = self.active_menu.attorney_selected
+        if isinstance(self.active_menu.case_selected, str) and self.active_menu.case_selected:    
+            self.selected_case = self.active_menu.case_selected  
         
         self.display.update()
         

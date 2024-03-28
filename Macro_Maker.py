@@ -16,7 +16,8 @@ from Services.GUIManager import GUIManager
 from Services.MainScreen import MainScreen
 from Services.AddTemplate import AddTemplate
 from Services.AddCaseInfo import AddCaseInfo
-menus = [MainScreen, AddTemplate, AddCaseInfo]
+from Services.ConstructDocument import ConstructDocument
+menus = [MainScreen, AddTemplate, AddCaseInfo, ConstructDocument]
 
 
 def init_instances():

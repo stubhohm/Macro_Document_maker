@@ -11,6 +11,8 @@ class MainScreen():
         self.target_menu = None
         self.options = []
         self.selected_template = None
+        self.attorney_selected = None
+        self.case_selected = None
 
     def on_box_select(self, box):
         self.selected_template = box.get()

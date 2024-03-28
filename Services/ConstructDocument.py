@@ -1,7 +1,7 @@
 from Classes.Case_fields import attorney_info, applicant_info, decedent_info, filing_info, interested_person
 
 class ConstructDocument():
-    name = 'Add_Case_Info'
+    name = 'Construct_Document'
     
     def __init__(self, display, tk, ttk, messagebox, filedialog):
         self.display = display
@@ -32,6 +32,11 @@ class ConstructDocument():
         self.target_menu = self.name
         self.call_update = True
 
+    def open_py_file(self, path):
+        with open(path, 'r') as file:
+                file = file.read()
+        return file
+
     def go_to_new_menu(self, target_menu):
         self.target_menu = target_menu
         self.call_update = True
@@ -50,37 +55,39 @@ class ConstructDocument():
         self.case_path = data_base.destination_file_py
         self.doc_inited = True
 
-    def get_macro_text(self, editor):
-        editor.destination_file_py = self.macro_path
-        editor.open_py_file()
-        return editor.py_file_text
+    def get_macro_text(self, editor, read):
+        file_text = self.open_py_file(self.macro_path)
+        return file_text
 
-    def scan_text_for_fields(self, text):
+
+    def scan_text_for_fields(self, file):
+        lines = file.splitlines()
         deced = [decedent_info,'decedent_info']
         file = [filing_info, 'filing_info']
         interest = [interested_person, 'interested_person']
-        info_types = []
+        info_types = [deced, file, interest]
         called_information = []
-        for line in text:
+        for line in lines:
             if 'case_information.' not in line:
                 continue
             for type in info_types:
-                if type[1][0] not in line:
+                if type[1][1] not in line:
                     continue
-                for key in type[1][1].keys():
+                for key in type[1][0].keys():
                     if key not in line:
                         continue
                     query = [type[1][0]][key]
                     if query in called_information:
                         continue
                     called_information.append(query)
+        print(called_information)
 
     def get_called_information(self, data_base, editor):
-        macro_text = self.get_macro_text(editor)
-        if not macro_text:
+        macro_file = self.get_macro_text(editor, False)
+        if not macro_file:
             self.critical_fail()
             return
-        self.scan_macro_text_for_fields(macro_text)
+        self.scan_text_for_fields(macro_file)
         
 
     def header_and_return_to_main(self, root):
@@ -112,7 +119,7 @@ class ConstructDocument():
         self.selected_case = input_data[2]
         data_base = input_data[3]
 
-
+        print(self.selected_attorney, self.selected_case, self.selected_template)
         # Make a copy of the selected pdf and get related scripts and files
         self.get_called_document_paths(data_base, editor)
         self.get_called_information(data_base, editor)
@@ -124,14 +131,7 @@ class ConstructDocument():
 
         # Drop Down Frame
         option_frame = self.ttk.Frame(root)
-        option_frame.pack()
-
-        either = (self.add_attorney or self.delete_attorney) or (self.add_case or self.delete_case)
-        if not either or self.update_case:
-            self.case_box = self.display_options(option_frame, cases, 'Case Name')
-        if not either or self.update_attorney:
-            self.attorney_box = self.display_options(option_frame, attorneys, 'Attorney')
-        
+        option_frame.pack()       
                
         # If user selected to fill in Case or Attorny Data these functions run
         case_att_button_frame = self.ttk.Frame(root)

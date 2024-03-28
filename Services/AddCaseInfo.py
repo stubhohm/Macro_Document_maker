@@ -314,6 +314,7 @@ class AddCaseInfo():
         if not self.attorney_selected:
             print('you must select an attorney')
             return
+        self.go_to_new_menu('Construct_Document')
 
     def on_delete_attorney_submit(self, data_base, editor):
         attorney_selected = self.attorney_selected.get()
