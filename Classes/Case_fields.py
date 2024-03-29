@@ -23,7 +23,7 @@ applicant_info = {
     }
 
 filing_info = {
-        'Probate Court County':' ',
+        'County':' ',
         'Street Address':' ',
         'Telephone': ' ',
         'Judge':' ',
@@ -39,9 +39,11 @@ decedent_info = {
         'Last Name':' ',
         'Date of Death':' ',
         'Time of Death':' ',
+        'Street Address': ' ',
         'City':' ',
         'County':' ',
         'State':' ',
+        'Zip': ' ',
         'Will Date':' ',
         'Codicil Date' : ' ',
         'Codicile County' : ' ',

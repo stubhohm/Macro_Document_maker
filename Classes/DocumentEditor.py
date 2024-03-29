@@ -164,10 +164,15 @@ class DocumentEditor:
         progress['value'] = bar_size
 
     def add_existing_fields(self,):
-        self.open_py_file()
         
+        self.open_py_file()
         fx_text = '\n\n    def update_fields(self, case_information, existing_fields):'
         self.py_file_text = self.py_file_text + fx_text 
+        if not self.existing_fields:
+            text = f"\n        pass"
+            self.py_file_text += text
+            self.write_py_file()
+            return
         for field in self.existing_fields:
             field_text = self.existing_fields[field]
             
@@ -225,6 +230,26 @@ class DocumentEditor:
 
         except Exception as e:
             print(f"Error creating instance: {e}")
+
+    def make_instance(self):
+        try:
+            snake_name = self.make_snake(self.doc_name)
+            # Import the module dynamically
+            module_name = self.destination_file_py
+
+            with open(module_name, 'r') as file:
+                contents = file.read()
+            exec(contents, globals())
+            class_obj = globals()[snake_name]
+            # Create an instance of the class
+            instnace = class_obj()
+            self.pdf_type.bool = self.bool
+            print(self.pdf_type)
+            print('object instanced')
+
+        except Exception as e:
+            print(f"Error creating instance: {e}")
+
 
     def update_form_fields(self, case_information):
         self.pdf_type.update_fields(case_information, self.existing_fields)

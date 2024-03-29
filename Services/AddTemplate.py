@@ -191,6 +191,8 @@ class AddTemplate():
         canvas.create_window((0, 0), window=frame, anchor="nw")
         self.entries = []
         i = 0
+        if not fields:
+            return
         for field in fields:
             
             field_text = fields[field]

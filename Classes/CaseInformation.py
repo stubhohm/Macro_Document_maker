@@ -15,7 +15,7 @@ class CaseInformation:
         self.interested_persons.append(person)
         
     def get_full_address(self, person):
-        address_k = 'Street_address'
+        address_k = 'Street address'
         city_k = 'City'
         state_k = 'State'
         zip_k = 'Zip' 

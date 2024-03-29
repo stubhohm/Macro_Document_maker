@@ -33,9 +33,13 @@ class ConstructDocument():
         self.call_update = True
 
     def open_py_file(self, path):
-        with open(path, 'r') as file:
-                file = file.read()
-        return file
+        try:
+            with open(path, 'r') as file:
+                    file = file.read()
+            return file
+        except Exception as e:
+            print(f'Error opening file {path}. Error: {e}')
+            return None
 
     def go_to_new_menu(self, target_menu):
         self.target_menu = target_menu
@@ -55,41 +59,62 @@ class ConstructDocument():
         self.case_path = data_base.destination_file_py
         self.doc_inited = True
 
-    def get_macro_text(self, editor, read):
-        file_text = self.open_py_file(self.macro_path)
-        return file_text
-
 
     def scan_text_for_fields(self, file):
         lines = file.splitlines()
+        attorney = [attorney_info, 'attorney_info']
+        applicant = [applicant_info, 'applicant_info']
         deced = [decedent_info,'decedent_info']
         file = [filing_info, 'filing_info']
         interest = [interested_person, 'interested_person']
-        info_types = [deced, file, interest]
+        info_types = [applicant, attorney, deced, file, interest]
         called_information = []
+        # This big nested for loop is probably the ugliest/smelliest part of this codebase
         for line in lines:
             if 'case_information.' not in line:
                 continue
             for type in info_types:
-                print(type[1])
                 if type[1] not in line:
                     continue
                 for key in type[0].keys():
-                    if key not in line:
+                    if key not in line and 'get' not in line:
                         continue
+                    if 'get' in line:
+                        key = 'get_function'
                     query = [type[1], key]
                     if query in called_information:
                         continue
                     called_information.append(query)
+                    break
+                break           
         print(called_information)
+        return called_information
 
-    def get_called_information(self, data_base, editor):
-        macro_file = self.get_macro_text(editor, False)
+    def get_called_information(self):
+        macro_file = self.open_py_file(self.macro_path)
         if not macro_file:
             self.critical_fail()
-            return
-        self.scan_text_for_fields(macro_file)
+            return [None]
+        return self.scan_text_for_fields(macro_file)
+
+    def scan_text_for_known_information(self, file):
+        lines = file.splitlines()
+        applicant = [applicant_info, 'applicant_info']
+        deced = [decedent_info,'decedent_info']
+        file = [filing_info, 'filing_info']
+        interest = [interested_person, 'interested_person']
+        info_types = [applicant, deced, file, interest]
+        known_information = []
         
+            
+    def get_known_information(self, editor):
+        case_file = self.open_py_file(self.case_path)
+        if not case_file:
+            self.critical_fail()
+            return [None]
+        return self.scan_text_for_known_information(case_file)
+        
+
 
     def header_and_return_to_main(self, root):
         header = self.ttk.Label(root, text=f'Filling out {self.selected_template} template.')
@@ -123,8 +148,13 @@ class ConstructDocument():
         print(self.selected_attorney, self.selected_case, self.selected_template)
         # Make a copy of the selected pdf and get related scripts and files
         self.get_called_document_paths(data_base, editor)
-        self.get_called_information(data_base, editor)
+        called_info = self.get_called_information()
+        known_info = self.get_known_information(data_base, editor)
+        self.ensure_client_information()
+        self.ensure_filing_information()
+
         
+
         # Header for page
         header_frame = self.ttk.Frame(root)
         header_frame.pack()
