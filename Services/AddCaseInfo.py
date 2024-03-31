@@ -14,7 +14,7 @@ class AddCaseInfo():
         self.target_menu = None
         self.options = []
         self.att_fields = []
-        self.selected_template = None
+        self.template_selected = None
         self.required_fields = None
         self.case_name = None
         self.doc_inited = False
@@ -64,11 +64,11 @@ class AddCaseInfo():
     def get_called_document(self, data_base, editor):
         if self.doc_inited:
             return
-        data_base.get_local_doc_path(self.selected_template)
-        data_base.get_local_py_path(self.selected_template)
+        data_base.get_local_doc_path(self.template_selected)
+        data_base.get_local_py_path(self.template_selected)
         editor.input_pdf_path = data_base.destination_file
         editor.destination_file_py = data_base.destination_file_py
-        editor.doc_name = self.selected_template
+        editor.doc_name = self.template_selected
         editor.open_pdf()
         if not editor.input_pdf_reader:
             self.critical_fail()
@@ -79,7 +79,7 @@ class AddCaseInfo():
         self.doc_inited = True
 
     def header_and_return_to_main(self, root):
-        header = self.ttk.Label(root, text=f'Filling out {self.selected_template} template.')
+        header = self.ttk.Label(root, text=f'Filling out {self.template_selected} template.')
         header.pack() 
         main_menu_button = self.ttk.Button(root, text='Return to Main Menu', command= lambda: self.go_to_new_menu('Main_Screen'))
         main_menu_button.pack(pady=10)
@@ -255,7 +255,7 @@ class AddCaseInfo():
             return
         editor.make_new_case_file_copy()
         editor.make_new_case_dictionary(self.case_name)
-        data_base.destination_path_py = editor.destination_file_py
+        data_base.destination_file_py = editor.destination_file_py
         editor.write_py_file()
         data_base.add_case_to_db(self.case_name)
         self.sub_case, self.add_case, self.update_case = False, False, False
@@ -345,7 +345,7 @@ class AddCaseInfo():
     def menu_main(self, root, input_data, editor):
         # Extract input data
         data_base = input_data[0]
-        self.selected_template = input_data[1]
+        self.template_selected = input_data[1]
 
         self.begin_doc()
 

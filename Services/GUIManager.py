@@ -7,8 +7,8 @@ class GUIManager():
         self.active_menu = None
         self.update_menu = True
         self.confirm_close_init = False
-        self.selected_template = None
-        self.selected_case = None
+        self.template_selected = None
+        self.case_selected = None
         self.selected_attorney = None
 
     def clear_window(self):
@@ -64,12 +64,12 @@ class GUIManager():
         # Checks to see if an update was called in the window and reports that to the manager
         if isinstance(self.active_menu.call_update, bool):
             self.update_menu = self.active_menu.call_update
-        if isinstance(self.active_menu.selected_template, str) and self.active_menu.selected_template:
-            self.selected_template = self.active_menu.selected_template
+        if isinstance(self.active_menu.template_selected, str) and self.active_menu.template_selected:
+            self.template_selected = self.active_menu.template_selected
         if isinstance(self.active_menu.attorney_selected, str) and self.active_menu.attorney_selected:    
             self.selected_attorney = self.active_menu.attorney_selected
         if isinstance(self.active_menu.case_selected, str) and self.active_menu.case_selected:    
-            self.selected_case = self.active_menu.case_selected  
+            self.case_selected = self.active_menu.case_selected  
         
         self.display.update()
         

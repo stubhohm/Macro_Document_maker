@@ -10,12 +10,12 @@ class MainScreen():
         self.call_update = False
         self.target_menu = None
         self.options = []
-        self.selected_template = None
+        self.template_selected = None
         self.attorney_selected = None
         self.case_selected = None
 
     def on_box_select(self, box):
-        self.selected_template = box.get()
+        self.template_selected = box.get()
         self.go_to_new_menu('Add_Case_Info')
 
     def refresh_screen(self):

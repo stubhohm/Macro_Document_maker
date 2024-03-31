@@ -26,7 +26,7 @@ class AddTemplate():
         self.entries =[]
         self.define_fields = False
         self.submit_fields = False
-        self.selected_template = None
+        self.template_selected = None
         self.attorney_selected = None
         self.case_selected = None
 

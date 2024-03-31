@@ -217,7 +217,7 @@ class DocumentEditor:
             snake_name = self.make_snake(self.doc_name)
             # Import the module dynamically
             module_name = self.destination_file_py
-
+            print(f'module name : {module_name}')
             with open(module_name, 'r') as file:
                 contents = file.read()
             exec(contents, globals())
@@ -230,26 +230,6 @@ class DocumentEditor:
 
         except Exception as e:
             print(f"Error creating instance: {e}")
-
-    def make_instance(self):
-        try:
-            snake_name = self.make_snake(self.doc_name)
-            # Import the module dynamically
-            module_name = self.destination_file_py
-
-            with open(module_name, 'r') as file:
-                contents = file.read()
-            exec(contents, globals())
-            class_obj = globals()[snake_name]
-            # Create an instance of the class
-            instnace = class_obj()
-            self.pdf_type.bool = self.bool
-            print(self.pdf_type)
-            print('object instanced')
-
-        except Exception as e:
-            print(f"Error creating instance: {e}")
-
 
     def update_form_fields(self, case_information):
         self.pdf_type.update_fields(case_information, self.existing_fields)
@@ -278,7 +258,7 @@ class DocumentEditor:
     def make_new_case_dictionary(self, case_name):
         fx_header = '    def update_dictionary(self):'
         line_header = "\n        self."
-        self.py_file_text += '\n\n' + fx_header + line_header + f"name = '{case_name}'"
+        self.py_file_text += '\n\n' + fx_header + line_header + f"case_name = '{case_name}'"
         line_groups = [[applicant_info,"applicant_info['"], [filing_info,"filing_info['"], [decedent_info, "decedent_info['"], [interested_person,"interested_person['"]]
         for item in line_groups:
             line_subtype_text = item[1]

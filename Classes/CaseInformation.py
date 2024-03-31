@@ -15,7 +15,7 @@ class CaseInformation:
         self.interested_persons.append(person)
         
     def get_full_address(self, person):
-        address_k = 'Street address'
+        address_k = 'Street Address'
         city_k = 'City'
         state_k = 'State'
         zip_k = 'Zip' 
@@ -27,9 +27,9 @@ class CaseInformation:
         return full_add
 
     def get_full_name(self, person):
-        f_name = 'first_name'
-        m_name = 'middle_name'
-        l_name = 'last_name'
+        f_name = 'First Name'
+        m_name = 'Middle Name'
+        l_name = 'Last Name'
         first_name = str(person[f_name])
         middle_name = str(person[m_name])
         last_name = str(person[l_name])

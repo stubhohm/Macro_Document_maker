@@ -15,7 +15,7 @@ class ConstructDocument():
         self.target_menu = None
         self.options = []
         self.att_fields = []
-        self.selected_template = None
+        self.template_selected = None
         self.required_fields = None
         self.attorney_selected = None
         self.case_selected = None
@@ -23,14 +23,65 @@ class ConstructDocument():
         self.macro_path = None
         self.case_path = None
         self.attorney_path = None
+        self.submitted_data = None
 
-    def critical_fail(self):
+    def critical_fail(self, text = ''):
         self.critical_error = True
+        print(text)
         self.go_to_new_menu(self.name)
 
     def refresh_screen(self):
         self.target_menu = self.name
         self.call_update = True
+
+    def header_and_return_to_main(self, root):
+        header = self.ttk.Label(root, text=f'Filling out {self.template_selected} template.')
+        header.pack() 
+        main_menu_button = self.ttk.Button(root, text='Return to Main Menu', command= lambda: self.go_to_new_menu('Main_Screen'))
+        main_menu_button.pack(pady=10)
+
+    def make_unknown_entry(self, root, item):
+        item_text = ''
+        if 'get_function' in item[1]:
+            return None
+        if 'attorney' in item[0]:
+            item_text = 'Attorney '
+        if 'applicant' in item[0]:
+            item_text = 'Applicant '
+        if 'filing' in item[0]:
+            item_text = 'Filing '
+        if 'decedent' in item[0]:
+            item_text = 'Decedent '
+        if 'interested' in item[0]:
+            item_text = 'Interested Person '
+        item_text += item[1]
+        row_frame = self.ttk.Frame(root)
+        row_frame.pack(fill = 'x')
+        item_label = self.ttk.Label(row_frame, text = item_text)
+        item_label.pack()
+        item_entry = self.ttk.Entry(row_frame)
+        item_entry.pack(pady=(0,5))
+        key = item[1]
+        info_type = item[0]
+        return [info_type, key, item_entry]
+
+    def display_unknown_fields(self, root, called_info):
+        header = self.ttk.Label(root, text=f"Unkown fields for {self.case_selected}'s {self.template_selected}")
+        header.pack(pady=5)
+        canvas = self.tk.Canvas(root)
+        scrollbar = self.ttk.Scrollbar(root, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(fill="both", expand=True)
+        frame = self.ttk.Frame(canvas)
+        canvas.create_window((0, 0), window=frame, anchor="nw")
+        entries = []
+        for item in called_info:
+            entry = self.make_unknown_entry(frame, item)
+            if not entry:
+                continue
+            entries.append(entry)
+        return entries
 
     def open_py_file(self, path):
         try:
@@ -48,18 +99,42 @@ class ConstructDocument():
     def get_called_document_paths(self, data_base, editor):
         if self.doc_inited:
             return
-        data_base.get_local_doc_path(self.selected_template)
+        print(self.selected_attorney, self.case_selected, self.template_selected)
+        data_base.get_local_doc_path(self.template_selected)
         self.pdf_path = data_base.destination_file
-        data_base.get_local_py_path(self.selected_template)
+        data_base.get_local_py_path(self.template_selected)
         self.macro_path = data_base.destination_file_py
         editor.destination_file_py = self.macro_path
         data_base.get_attorney_path(self.selected_attorney)
         self.attorney_path = data_base.destination_file_py
-        data_base.get_case_path(self.selected_case)
+        data_base.get_case_path(self.case_selected)
         self.case_path = data_base.destination_file_py
         self.doc_inited = True
 
+    def update_dict(self, dicts, dict_type, text,):
+        for entry in self.submitted_data:
+            type = entry[0]
+            key = entry[1]
+            new_value = entry[2]
+            old_value = dicts[key]
+            old_text = f"{type}['{key}'] = '{old_value}'"
+            new_text = f"{type}['{key}'] = '{new_value}'"
+            print(old_text)
+            print(new_text)
+            text.replace(old_text, new_text)
 
+    def update_case_with_submitted_data(self, old_dicts):
+        if not self.submitted_data:
+            return
+        case_text = self.open_py_file(self.case_path)
+        if not case_text:
+            self.critical_fail('Failed to open case file for updating values')
+        dict_type = ['applicant_info', 'filing_info', 'decedent_info', 'interested_person', 'attorney_info']
+        for i, dicts in enumerate(old_dicts):
+            print(f'old dict {dicts}')
+            self.update_dict(dicts, dict_type[i], case_text)
+        print(case_text)
+          
     def scan_text_for_fields(self, file):
         lines = file.splitlines()
         attorney = [attorney_info, 'attorney_info']
@@ -87,7 +162,6 @@ class ConstructDocument():
                     called_information.append(query)
                     break
                 break           
-        print(called_information)
         return called_information
 
     def get_called_information(self):
@@ -96,38 +170,117 @@ class ConstructDocument():
             self.critical_fail()
             return [None]
         return self.scan_text_for_fields(macro_file)
+  
+    def instnace_py_class(self, class_name, script_path):
+        try:
+            # Import the module dynamically
+            with open(script_path, 'r') as file:
+                contents = file.read()
+            exec(contents, globals())
+            class_obj = globals()[class_name]
+            # Create an instance of the class
+            instanced_class = class_obj()
+            return instanced_class
 
-    def scan_text_for_known_information(self, file):
-        lines = file.splitlines()
-        applicant = [applicant_info, 'applicant_info']
-        deced = [decedent_info,'decedent_info']
-        file = [filing_info, 'filing_info']
-        interest = [interested_person, 'interested_person']
-        info_types = [applicant, deced, file, interest]
-        known_information = []
-        
-            
-    def get_known_information(self, editor):
-        case_file = self.open_py_file(self.case_path)
-        if not case_file:
-            self.critical_fail()
+        except Exception as e:
+            print(f"Error creating instance: {e}")
+            return None
+     
+    def get_known_information(self):
+        case_instance = self.instnace_py_class('CaseInformation', self.case_path)
+        if not case_instance:
+            self.critical_fail('Failed instancing Case during Doc Construction')
             return [None]
-        return self.scan_text_for_known_information(case_file)
-        
+        att_instance = self.instnace_py_class('AttorneyInformation', self.attorney_path)
+        if not att_instance:
+            self.critical_fail('Failed instancing Attorney during Doc Construction')
+            return [None]
+        att_instance.update_dictionary()
+        case_instance.update_dictionary()
+        case_instance.attorney_info = att_instance.attorney_info
+        case_dict = [case_instance.applicant_info, case_instance.filing_info, case_instance.decedent_info, case_instance.interested_person, case_instance.attorney_info]
+        return case_dict
 
+    def remove_known_data(self, known_data, called_data):
+        for item in list(called_data):
+            type = item[0]
+            key = item[1]
+            dict = None
+            if 'get' in key:
+                called_data.remove(item)
+                continue
+            if type == 'applicant_info':
+                dict = known_data[0]
+            if type == 'filing_info':
+                dict = known_data[1]
+            if type == 'decednet_info':
+                dict = known_data[2]
+            if type == 'attorney_info':
+                dict = known_data[4]
+            if not dict:
+                continue
+            value = dict[key]
+            if value == '':
+                continue
+            called_data.remove(item)
 
-    def header_and_return_to_main(self, root):
-        header = self.ttk.Label(root, text=f'Filling out {self.selected_template} template.')
-        header.pack() 
-        main_menu_button = self.ttk.Button(root, text='Return to Main Menu', command= lambda: self.go_to_new_menu('Main_Screen'))
-        main_menu_button.pack(pady=10)
-
-    #def display_options(self, root, options, selection_type):
+    def ensure_case_information(self, case_info, called_info, info_type):
+        for key in case_info.keys():
+            value = case_info[key]
+            empty = ''
+            if not value == empty:    
+                continue
+            entry = [info_type, key]
+            if entry in called_info:
+                continue
+            called_info.append(entry)
+                
+        '''
+        def display_options(self, root, options, selection_type):
         combo_box = self.ttk.Combobox(root, values=options)
         combo_box.set(f'Select an {selection_type}')
         combo_box.bind('<<ComboboxSelected>>', lambda event, st = selection_type: self.on_box_select(st))
         combo_box.pack(pady=10)
         return combo_box
+        '''
+
+    def get_function_data(self, case_info, called_info, info_type):
+        in_list = False
+        for item in called_info:
+            if info_type in item:
+                in_list = True
+                print(f'Infotype: {info_type} in list via {item}')
+                break
+        if not in_list:
+            print(f'{info_type} not in list')
+            return
+        empty = ''
+        get_function_keys = ['Name', 'Telephone', 'Bar Number', 'Street address', 'City', 'State','Zip']
+        for key in case_info.keys():
+            value = case_info[key]
+            if not value == empty:
+                continue
+            for get_key in get_function_keys:
+                if get_key not in key:
+                    continue
+            entry = [info_type, key]
+            called_info.append(entry)
+
+    def on_submit_entries(self, entries):
+        submissions = []
+        for entry in entries:
+            value_type = entry[0]
+            key = entry[1]
+            value = entry[2].get()
+            
+            submission = [value_type, key, value]
+            submissions.append(submission)
+        self.submitted_data = submissions
+        self.refresh_screen()
+
+    def submit_entries_button(self, root, entries):
+        submit_button = self.ttk.Button(root, text = 'Submit Previuosly Unknown Data', command = lambda: self.on_submit_entries(entries))
+        submit_button.pack()
 
     def on_fill_in_doc(self):
         self.refresh_screen()
@@ -137,34 +290,45 @@ class ConstructDocument():
         fill_in_doc_button = self.ttk.Button(root, text='Create Document', command= lambda: self.on_fill_in_doc())
         fill_in_doc_button.pack(pady=10)
 
-  
     def menu_main(self, root, input_data, editor):
         # Extract input data
         self.selected_attorney = input_data[0]
-        self.selected_template = input_data[1]
-        self.selected_case = input_data[2]
+        self.template_selected = input_data[1]
+        self.case_selected = input_data[2]
         data_base = input_data[3]
 
-        print(self.selected_attorney, self.selected_case, self.selected_template)
-        # Make a copy of the selected pdf and get related scripts and files
+        # Make a copy of the selected pdf and get related scripts and files.
         self.get_called_document_paths(data_base, editor)
         called_info = self.get_called_information()
-        known_info = self.get_known_information(data_base, editor)
-        self.ensure_client_information()
-        self.ensure_filing_information()
-
+        case_dict = self.get_known_information()
         
+        # See what data is called for and what data we know.
+        self.ensure_case_information(case_dict[0], called_info,'applicant_info')
+        self.ensure_case_information(case_dict[1], called_info, 'filing_info')
+        self.ensure_case_information(case_dict[4], called_info, 'attorney_information')
+        self.get_function_data(case_dict[2], called_info,'decedent_info')
+        self.get_function_data(case_dict[3], called_info,'interested_person')
 
+        # Sort the called information by type:
+        called_info = sorted(called_info, key=lambda x: (x[0], x[1]))
+        
+        # Remove known data from called info list
+        self.remove_known_data(case_dict, called_info)
+        self.update_case_with_submitted_data(case_dict)
         # Header for page
         header_frame = self.ttk.Frame(root)
         header_frame.pack()
         self.header_and_return_to_main(header_frame)
 
-        # Drop Down Frame
-        option_frame = self.ttk.Frame(root)
-        option_frame.pack()       
+        # Unknow Field Frame
+        unknow_field_frame = self.ttk.Frame(root)
+        unknow_field_frame.pack(fill='both', expand = True)
+        entries = self.display_unknown_fields(unknow_field_frame, called_info)
+        self.submit_entries_button(unknow_field_frame, entries)  
                
         # If user selected to fill in Case or Attorny Data these functions run
+        
+        '''
         case_att_button_frame = self.ttk.Frame(root)
         case_att_button_frame.pack()
         self.delete_selected_item(case_att_button_frame, data_base, editor)
@@ -196,3 +360,4 @@ class ConstructDocument():
         # update case info with filled in fields
 
         # publish doc
+        '''

@@ -7,7 +7,6 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from tkinter import Tk, ttk, messagebox, filedialog
 from Classes.ActiveUser import ActiveUser
-from Classes.Query import Query, tags
 from Classes.Session import Session
 from Classes.Documents import Documentsdb
 from Classes.CaseInformation import CaseInformation
@@ -18,7 +17,6 @@ from Services.AddTemplate import AddTemplate
 from Services.AddCaseInfo import AddCaseInfo
 from Services.ConstructDocument import ConstructDocument
 menus = [MainScreen, AddTemplate, AddCaseInfo, ConstructDocument]
-
 
 def init_instances():
     # UI Mngr houses the other screens and handles clearing and switching between screen displays

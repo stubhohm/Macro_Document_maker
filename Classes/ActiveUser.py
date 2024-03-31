@@ -10,7 +10,7 @@ class ActiveUser:
         self.ui_mngr = ui_mngr
         self.editor = editor
         self.input_data = None
-        self.selected_template = None
+        self.template_selected = None
 
     def init_menus(self, menus, tk, ttk, messagebox, filedialog):
         for menu in menus:
@@ -24,7 +24,7 @@ class ActiveUser:
         if name == main_screen or name == add_template:
             self.input_data = self.docs
         if name == add_case_info:
-            self.input_data = [self.docs, self.ui_mngr.selected_template] 
+            self.input_data = [self.docs, self.ui_mngr.template_selected] 
         if name == construct_doc:
             ui = self.ui_mngr
-            self.input_data = [ui.selected_attorney, ui.selected_template, ui.selected_case, self.docs]
+            self.input_data = [ui.attorney_selected, ui.template_selected, ui.case_selected, self.docs]
