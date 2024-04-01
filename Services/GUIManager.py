@@ -9,7 +9,7 @@ class GUIManager():
         self.confirm_close_init = False
         self.template_selected = None
         self.case_selected = None
-        self.selected_attorney = None
+        self.attorney_selected = None
 
     def clear_window(self):
         for widget in self.display.winfo_children():
@@ -67,7 +67,7 @@ class GUIManager():
         if isinstance(self.active_menu.template_selected, str) and self.active_menu.template_selected:
             self.template_selected = self.active_menu.template_selected
         if isinstance(self.active_menu.attorney_selected, str) and self.active_menu.attorney_selected:    
-            self.selected_attorney = self.active_menu.attorney_selected
+            self.attorney_selected = self.active_menu.attorney_selected
         if isinstance(self.active_menu.case_selected, str) and self.active_menu.case_selected:    
             self.case_selected = self.active_menu.case_selected  
         

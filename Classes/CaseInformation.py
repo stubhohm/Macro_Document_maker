@@ -30,10 +30,16 @@ class CaseInformation:
         f_name = 'First Name'
         m_name = 'Middle Name'
         l_name = 'Last Name'
-        first_name = str(person[f_name])
-        middle_name = str(person[m_name])
-        last_name = str(person[l_name])
-        full_name = first_name + ' ' + middle_name + ' ' + last_name
+        name = 'Name'
+        if f_name in person.keys():
+            first_name = str(person[f_name])
+            middle_name = str(person[m_name])
+            last_name = str(person[l_name])
+            full_name = first_name + ' ' + middle_name + ' ' + last_name
+        elif name in person.keys():
+            full_name = str(person['Name'])
+        else:
+            full_name = ''
         return full_name
         
     def get_name_address_phone(self, person, bar = False):

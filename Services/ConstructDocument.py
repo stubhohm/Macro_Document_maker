@@ -24,6 +24,7 @@ class ConstructDocument():
         self.case_path = None
         self.attorney_path = None
         self.submitted_data = None
+        self.create_doc = None
 
     def critical_fail(self, text = ''):
         self.critical_error = True
@@ -91,6 +92,14 @@ class ConstructDocument():
         except Exception as e:
             print(f'Error opening file {path}. Error: {e}')
             return None
+        
+    def write_py_file(self, path, contents):
+        try:
+            with open(path, 'w') as file:
+                    file = file.write(contents)
+            print(f'wrote file to {path}')
+        except Exception as e:
+            print(f'Error writing file {path}. Error: {e}')
 
     def go_to_new_menu(self, target_menu):
         self.target_menu = target_menu
@@ -111,17 +120,24 @@ class ConstructDocument():
         self.case_path = data_base.destination_file_py
         self.doc_inited = True
 
-    def update_dict(self, dicts, dict_type, text,):
+    def update_dict(self, dicts, dict_type, text):
         for entry in self.submitted_data:
             type = entry[0]
             key = entry[1]
+            if not type == dict_type:
+                continue
             new_value = entry[2]
             old_value = dicts[key]
-            old_text = f"{type}['{key}'] = '{old_value}'"
-            new_text = f"{type}['{key}'] = '{new_value}'"
+            old_text = f"self.{type}['{key}'] = '{old_value}'"
+            new_text = f"self.{type}['{key}'] = '{new_value}'"
             print(old_text)
             print(new_text)
-            text.replace(old_text, new_text)
+            if old_text in text:
+                print(f'Old text is present')
+            else:
+                print(f'Old text was not found')
+            text = text.replace(old_text, new_text)
+        return text
 
     def update_case_with_submitted_data(self, old_dicts):
         if not self.submitted_data:
@@ -131,10 +147,12 @@ class ConstructDocument():
             self.critical_fail('Failed to open case file for updating values')
         dict_type = ['applicant_info', 'filing_info', 'decedent_info', 'interested_person', 'attorney_info']
         for i, dicts in enumerate(old_dicts):
-            print(f'old dict {dicts}')
-            self.update_dict(dicts, dict_type[i], case_text)
-        print(case_text)
-          
+            case_text = self.update_dict(dicts, dict_type[i], case_text)
+        self.write_py_file(self.case_path, case_text)
+        self.submitted_data = None
+        self.create_doc = True
+        self.refresh_screen()
+             
     def scan_text_for_fields(self, file):
         lines = file.splitlines()
         attorney = [attorney_info, 'attorney_info']
@@ -272,7 +290,6 @@ class ConstructDocument():
             value_type = entry[0]
             key = entry[1]
             value = entry[2].get()
-            
             submission = [value_type, key, value]
             submissions.append(submission)
         self.submitted_data = submissions
@@ -282,13 +299,32 @@ class ConstructDocument():
         submit_button = self.ttk.Button(root, text = 'Submit Previuosly Unknown Data', command = lambda: self.on_submit_entries(entries))
         submit_button.pack()
 
-    def on_fill_in_doc(self):
-        self.refresh_screen()
-        return
-        
-    def fill_in_doc_button(self, root):
-        fill_in_doc_button = self.ttk.Button(root, text='Create Document', command= lambda: self.on_fill_in_doc())
-        fill_in_doc_button.pack(pady=10)
+    def instance_macro_classes(self, editor):
+        snake_macro_name = editor.make_snake(self.template_selected)
+        macro_class = self.instnace_py_class(snake_macro_name, self.macro_path)
+        macro_class.bool = editor.bool
+        editor.pdf_type = macro_class
+        attorney_class = self.instnace_py_class('AttorneyInformation', self.attorney_path)
+        attorney_class.update_dictionary()
+        case_class = self.instnace_py_class('CaseInformation', self.case_path)
+        case_class.update_dictionary()
+        case_class.attorney_info = attorney_class.attorney_info
+        editor.pdf_path = self.pdf_path
+        editor.open_pdf()
+        return case_class
+
+    def publish_doc(self, editor):
+        if not self.create_doc:
+            return
+        case_class = self.instance_macro_classes(editor)
+        editor.get_fields()
+        editor.copy_pdf()
+        editor.update_form_fields(case_class)
+        editor.fill_in_form()
+        output_file_name = f'{self.template_selected} on behalf of {self.case_selected}.pdf'
+        editor.output_pdf_path = output_file_name
+        editor.output_new_doc()
+        print(f'your new pdf can be found under the name {output_file_name}')
 
     def menu_main(self, root, input_data, editor):
         # Extract input data
@@ -299,6 +335,8 @@ class ConstructDocument():
 
         # Make a copy of the selected pdf and get related scripts and files.
         self.get_called_document_paths(data_base, editor)
+        self.publish_doc(editor)
+
         called_info = self.get_called_information()
         case_dict = self.get_known_information()
         

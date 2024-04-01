@@ -1,7 +1,9 @@
 case_name = ''
 
 attorney_info = {
-        'Name':' ',
+        'First Name':' ',
+        'Middle Name':' ',
+        'Last Name':' ',
         'Street Address': ' ',
         'City': ' ', 
         'State': ' ', 

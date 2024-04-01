@@ -239,7 +239,7 @@ class DocumentEditor:
         for page in self.output_pdf_writer.pages:
             self.output_pdf_writer.update_page_form_field_values(page, self.existing_fields)
 
-    def output_new_doc(self,):
+    def output_new_doc(self):
         # Create a canvas to add text to the PDF
         c = self.canvas.Canvas(self.output_pdf_path, pagesize=self.letter)
         c.save()
