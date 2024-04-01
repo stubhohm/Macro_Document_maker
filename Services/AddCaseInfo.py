@@ -2,7 +2,6 @@ from Classes.Case_fields import attorney_info
 
 class AddCaseInfo():
     name = 'Add_Case_Info'
-    
     def __init__(self, display, tk, ttk, messagebox, filedialog):
         self.display = display
         self.tk = tk
