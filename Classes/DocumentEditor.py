@@ -179,7 +179,8 @@ class DocumentEditor:
             text = f"\n        #{field}"
             if '/FT' in field_text and '/Kids' in field_text:
                 # If the field has Children
-                print(f'{field_text}')
+                # TODO need to resolve fields with kids
+                pass
 
             elif '/FT' in field_text and field_text['/FT'] == '/Btn':
                 # If the field is a button
@@ -217,7 +218,6 @@ class DocumentEditor:
             snake_name = self.make_snake(self.doc_name)
             # Import the module dynamically
             module_name = self.destination_file_py
-            print(f'module name : {module_name}')
             with open(module_name, 'r') as file:
                 contents = file.read()
             exec(contents, globals())
@@ -225,9 +225,6 @@ class DocumentEditor:
             # Create an instance of the class
             self.pdf_type = class_obj()
             self.pdf_type.bool = self.bool
-            print(self.pdf_type)
-            print('object instanced')
-
         except Exception as e:
             print(f"Error creating instance: {e}")
 
@@ -288,7 +285,7 @@ class DocumentEditor:
         if pre_loop == new_text:
             new_text = ''
         self.py_file_text += new_text
-        name = attorney_information['Name']
+        name = attorney_information['First Name'] + ' ' + attorney_information['Middle Name'] + ' ' + attorney_information['Last Name']
         snake_name = self.make_snake(name)
         self.destination_file_py += snake_name + '.py'
 
@@ -307,6 +304,6 @@ class DocumentEditor:
                 pass
             print(f'File {file_path} successfully deleted.')
         except FileNotFoundError:
-            print(f'File {file_path} not found.')
+            print(f'Error: File {file_path} not found.')
         except Exception as e:
             print(f'Error deleting file {file_path}: {e}')

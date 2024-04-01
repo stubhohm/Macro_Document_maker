@@ -188,13 +188,13 @@ class AddCaseInfo():
         editor.define_attorney_dictionary(self.att_fields)
         editor.write_py_file()
         data_base.destination_file_py = editor.destination_file_py
-        data_base.add_attorney_to_db(self.att_fields['Name'])
+        full_name = self.att_fields['First Name'] + ' ' + self.att_fields['Middle Name'] + ' ' + self.att_fields['Last Name']
+        data_base.add_attorney_to_db(full_name)
         self.sub_att, self.add_attorney, self.update_attorney = False, False, False
         self.refresh_screen()
 
     def update_attorney_doc(self, data_base, editor):
         attorney_name = self.attorney_selected.get()
-        print(f'attorney_name {attorney_name}')
         data_base.get_attorney_path(attorney_name)
         editor.destination_file_py = data_base.destination_file_py
         editor.open_py_file()
@@ -203,11 +203,8 @@ class AddCaseInfo():
             self.critical_fail()
             return
         for i, key in enumerate(attorney_info.keys()):
-            print(f'key {key}')
             entry = self.att_fields[i]
-            print(f'entry {entry}')
             text = text.replace(f"['{key}'] = '",f"['{key}'] = '{entry}'#")
-            print(text)
         return
 
     def add_attorney_fields(self, data_base, editor, root):
@@ -243,7 +240,7 @@ class AddCaseInfo():
         try:
             self.case_name = self.case_name.get()
         except:
-            print("new case submit error")
+            print('Error Encountered getting case name')
         self.sub_case = True
         self.add_case = True
         self.refresh_screen()
@@ -268,7 +265,7 @@ class AddCaseInfo():
             self.create_new_case(data_base, editor)
             return
         if self.update_case:
-            print('updating case')
+            print('update case')
         case_entry_label = self.ttk.Label(root, text='Enter New Case Name')
         case_entry_label.pack(pady=(5,0))
         case_entry = self.ttk.Entry(root)
@@ -293,10 +290,9 @@ class AddCaseInfo():
         if text:
             text = f'You must select {text} to begin formatting a document'
             print(text)
+            self.fill_in_doc = False
             self.refresh_screen()
             return
-        
-        print('filling in doc')
         self.refresh_screen()
 
     def fill_in_doc_button(self, root):
@@ -306,11 +302,9 @@ class AddCaseInfo():
     def begin_doc(self):
         if not self.fill_in_doc:
             return
-        print(self.case_selected)
         if not self.case_selected:
             print('you must select a case')
             return
-        print(self.attorney_selected)
         if not self.attorney_selected:
             print('you must select an attorney')
             return

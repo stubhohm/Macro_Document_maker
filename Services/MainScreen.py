@@ -25,7 +25,6 @@ class MainScreen():
     def go_to_new_menu(self, target_menu):
         self.target_menu = target_menu
         self.call_update = True
-        print(self.target_menu, self.call_update)
 
     def on_new_template_select(self):
         self.target_menu = 'Add_Template'
@@ -37,7 +36,6 @@ class MainScreen():
         
     def get_options(self, documents):
         self.options = documents.get_template_names()
-        print(self.options)
         holder = []
         for option in self.options:
             option = option[0]

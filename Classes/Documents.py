@@ -33,16 +33,17 @@ bool = "\n        self.bool = None"
 
 class Documentsdb():
     name = "Documents_DataBase"
-    def __init__(self, sql, re):
+    def __init__(self, sql, re, os):
         self.document = []
         self.sql = sql
         self.re = re
+        self.os = os
         self.matches = None
         self.connection = sql.connect(db_path)
         self.cursor = self.connection.cursor()
-        self.destination_dir = 'Services\\Docs'
+        self.destination_dir = 'Services\\\\Docs'
         self.destination_file = None
-        self.destination_dir_py = 'Classes\\Doc_types'
+        self.destination_dir_py = 'Classes\\\\Doc_types'
         self.destination_file_py = None
 
     def init_db(self):
@@ -76,11 +77,9 @@ class Documentsdb():
         self.connection.close()
 
     def get_local_doc_path(self, name):
-        print(f'geting name {name}')
         get_query = f'SELECT {doc_path_sql} FROM {docs_table} WHERE {name_sql} = ?'
         self.cursor.execute(get_query, (name,))
         path = self.cursor.fetchone()
-        print(f'getting path {path}')
         self.destination_file = path[0]
 
     def get_local_py_path(self, name):
@@ -101,9 +100,6 @@ class Documentsdb():
         return self.cursor.fetchall()
 
     def add_to_doc_db(self, name):
-        print(f'setting dest: {self.destination_file_py}')
-        print(f'setting doc_path {self.destination_file}')
-        print(f'settting name {name}')
         insert_query = f'INSERT OR REPLACE INTO {docs_table} ({name_sql}, {doc_path_sql}, {script_path_sql}) VALUES (?, ?, ?)'
         self.cursor.execute(insert_query, (name, self.destination_file, self.destination_file_py,))
         self.connection.commit()
@@ -121,7 +117,6 @@ class Documentsdb():
         except Exception as e:
             print(f'No Case File Found due to {e}')
             self.destination_file_py = None
-        print(self.destination_file_py)
 
     def add_attorney_to_db(self, name):
         insert_query = f'INSERT OR REPLACE INTO {attorney_table} ({attorney_name_sql}, {attorney_info_path_sql}) VALUES (?, ?)'
@@ -136,7 +131,6 @@ class Documentsdb():
         except Exception as e:
             print(f'No Attorney File Found due to {e}')
             self.destination_file_py = None
-        print(self.destination_file_py)
 
     def make_local_copy(self, file_name, source_file):
         snake_name = file_name.replace(' ', '_')
@@ -145,18 +139,16 @@ class Documentsdb():
             file_contents = src_file.read()
 
         # Construct the destination file path
-        self.destination_file = self.destination_dir + '\\' + file_name + '.pdf'
-        self.destination_file_py = self.destination_dir_py + '\\' + snake_name + '.py'
+        self.destination_file = self.destination_dir + '\\\\' + file_name + '.pdf'
+        self.destination_file_py = self.destination_dir_py + '\\\\' + snake_name + '.py'
 
         # Open the destination file for writing
         with open(self.destination_file, 'wb') as dest_file:
-            print(self.destination_file)
             # Write the contents of the source file to the destination file
             dest_file.write(file_contents)
 
         # Open the destination file for writing of python script
         with open(self.destination_file_py, 'w') as dest_file:
-            print(self.destination_file_py)
             # Write the contents of the source file to the destination file
             text = constants + cls + snake_name + '():' + init + name + "'" + file_name + "'" + path + "'" + self.destination_file + "'" + bool
             dest_file.write(text)
@@ -165,14 +157,11 @@ class Documentsdb():
         ## Instance the new document
         self.make_local_copy(template_name, file_path)
         self.add_to_doc_db(template_name)
-        print('added to db')
 
     def remove_attorney_from_db(self, name):
-        print(name)
         query = f'DELETE FROM {attorney_table} WHERE {attorney_name_sql} = ?'
         self.cursor.execute(query, (name,))
         self.connection.commit()
-        print('removed from db')
         return
 '''
     def rename_attorney(self, editor, old_name, new_name, file_path):

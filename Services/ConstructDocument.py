@@ -97,7 +97,6 @@ class ConstructDocument():
         try:
             with open(path, 'w') as file:
                     file = file.write(contents)
-            print(f'wrote file to {path}')
         except Exception as e:
             print(f'Error writing file {path}. Error: {e}')
 
@@ -108,7 +107,6 @@ class ConstructDocument():
     def get_called_document_paths(self, data_base, editor):
         if self.doc_inited:
             return
-        print(self.selected_attorney, self.case_selected, self.template_selected)
         data_base.get_local_doc_path(self.template_selected)
         self.pdf_path = data_base.destination_file
         data_base.get_local_py_path(self.template_selected)
@@ -130,12 +128,6 @@ class ConstructDocument():
             old_value = dicts[key]
             old_text = f"self.{type}['{key}'] = '{old_value}'"
             new_text = f"self.{type}['{key}'] = '{new_value}'"
-            print(old_text)
-            print(new_text)
-            if old_text in text:
-                print(f'Old text is present')
-            else:
-                print(f'Old text was not found')
             text = text.replace(old_text, new_text)
         return text
 
@@ -267,10 +259,8 @@ class ConstructDocument():
         for item in called_info:
             if info_type in item:
                 in_list = True
-                print(f'Infotype: {info_type} in list via {item}')
                 break
         if not in_list:
-            print(f'{info_type} not in list')
             return
         empty = ''
         get_function_keys = ['Name', 'Telephone', 'Bar Number', 'Street address', 'City', 'State','Zip']
