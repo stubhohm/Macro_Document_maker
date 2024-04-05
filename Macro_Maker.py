@@ -3,7 +3,7 @@ import sqlite3
 import re
 import os
 from PyPDF2 import PdfReader, PdfWriter
-from PyPDF2.generic import BooleanObject
+from PyPDF2.generic import BooleanObject, PdfObject
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from tkinter import Tk, ttk, messagebox, filedialog
