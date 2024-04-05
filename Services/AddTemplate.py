@@ -194,9 +194,8 @@ class AddTemplate():
         if not fields:
             return
         for field in fields:
-            
             field_text = fields[field]
-            if '/Kids' in field_text or field_text['/FT'] == '/Btn':
+            if field_text['/FT'] == '/Btn':
                 continue
             # Make Label 
             label_text = f'{i+1}. Field Name: {field}'

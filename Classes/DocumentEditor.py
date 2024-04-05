@@ -182,13 +182,13 @@ class DocumentEditor:
                 # TODO need to resolve fields with kids
                 pass
 
-            elif '/FT' in field_text and field_text['/FT'] == '/Btn':
+            elif field_text['/FT'] == '/Btn':
                 # If the field is a button
                 text = f"\n        existing_fields['{field}'] = self.bool(True)#{field}"
 
             else:
                 # The field is just text
-                text = f"\n        existing_fields['{field}'] = 'field: {field}'"
+                text = f"\n        existing_fields['{field}'] = 'field: {field_text['/T']}'"
 
             self.py_file_text = self.py_file_text + text
         self.write_py_file()
@@ -203,6 +203,20 @@ class DocumentEditor:
         
     def get_fields(self):
         self.existing_fields = self.input_pdf_reader.get_fields()
+        self.remove_fields_with_children()
+
+    def remove_fields_with_children(self):
+        filtered_fields = {}
+        for key, value in self.existing_fields.items():
+            if '/Kids' in value:
+                continue
+            #value_as_dict = {}
+            #for sub_key, sub_item in value.items():
+            #    value_as_dict[sub_key] = sub_item
+            #print(value_as_dict)
+            filtered_fields[key] = value
+        self.existing_fields = filtered_fields
+
 
     def copy_pdf(self):
         # Step 2: Create a Copy of the PDF Document
