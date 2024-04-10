@@ -209,6 +209,9 @@ class DocumentEditor:
         filtered_fields = {}
         for key, value in self.existing_fields.items():
             if '/Kids' in value:
+                kids = self.existing_fields[key].kids
+                for kid in kids:
+                    print(kid)
                 continue
             #value_as_dict = {}
             #for sub_key, sub_item in value.items():
