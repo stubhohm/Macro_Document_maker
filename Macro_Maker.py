@@ -3,14 +3,13 @@ import sqlite3
 import re
 import os
 from PyPDF2 import PdfReader, PdfWriter
-from PyPDF2.generic import BooleanObject, PdfObject
+from PyPDF2.generic import BooleanObject
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from tkinter import Tk, ttk, messagebox, filedialog
 from Classes.ActiveUser import ActiveUser
 from Classes.Session import Session
 from Classes.Documents import Documentsdb
-from Classes.CaseInformation import CaseInformation
 from Classes.DocumentEditor import DocumentEditor
 from Services.GUIManager import GUIManager
 from Services.MainScreen import MainScreen
