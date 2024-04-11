@@ -23,7 +23,7 @@ class CaseInformation:
         city = person[city_k] 
         state = person[state_k]
         zip = person[zip_k]
-        full_add = add + '\n' + city + ', ' + state + ' ' + zip
+        full_add = add + ' \n' + city + ', ' + state + ' ' + zip
         return full_add
 
     def get_full_name(self, person):
