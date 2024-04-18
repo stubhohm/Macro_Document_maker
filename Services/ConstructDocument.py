@@ -1,4 +1,4 @@
-from Classes.Case_fields import attorney_info, applicant_info, decedent_info, filing_info, interested_person
+from Classes.Case_fields import attorney_info, applicant_info, decedent_info, filing_info, interested_person, interested_persons
 
 class ConstructDocument():
     name = 'Construct_Document'
@@ -42,6 +42,7 @@ class ConstructDocument():
         main_menu_button.pack(pady=10)
 
     def make_unknown_entry(self, root, item):
+        print(f"item{item}")
         item_text = ''
         if 'get_function' in item[1]:
             return None
@@ -55,6 +56,11 @@ class ConstructDocument():
             item_text = 'Decedent '
         if 'interested' in item[0]:
             item_text = 'Interested Person '
+        for i in range(1,6):
+            as_str =f'{i}'
+            if as_str in item[0]: 
+                print(item[0])
+                item_text += f' {as_str} '
         item_text += item[1]
         row_frame = self.ttk.Frame(root)
         row_frame.pack(fill = 'x')
@@ -122,12 +128,18 @@ class ConstructDocument():
         for entry in self.submitted_data:
             type = entry[0]
             key = entry[1]
-            if not type == dict_type:
+            print(f'Entry: {entry}')
+            if not dict_type in type:
                 continue
+            for i in range(1,6):
+                ast_str = f"{i}"
+                if ast_str in type:
+                    type = f'interested_persons[{i-1}]'
             new_value = entry[2]
             old_value = dicts[key]
             old_text = f"self.{type}['{key}'] = '{old_value}'"
             new_text = f"self.{type}['{key}'] = '{new_value}'"
+            print(f'old:{old_text}, new: {new_text}')
             text = text.replace(old_text, new_text)
         return text
 
@@ -166,7 +178,14 @@ class ConstructDocument():
                         continue
                     if 'get' in line:
                         key = 'get_function'
-                    query = [type[1], key]
+                    field = type[1]
+                    if 'interested_person' in line:
+                        for i in range(1,6):
+                            as_str = f'{i}'
+                            if as_str in line:
+                                field = type[1] + f' {i+1}'
+                    query = [field, key]
+                    
                     if query in called_information:
                         continue
                     called_information.append(query)
@@ -206,6 +225,7 @@ class ConstructDocument():
             self.critical_fail('Failed instancing Attorney during Doc Construction')
             return [None]
         att_instance.update_dictionary()
+        print(f'Type: {type(case_instance)}')
         case_instance.update_dictionary()
         case_instance.attorney_info = att_instance.attorney_info
         case_dict = [case_instance.applicant_info, case_instance.filing_info, case_instance.decedent_info, case_instance.interested_person, case_instance.attorney_info]
@@ -283,6 +303,7 @@ class ConstructDocument():
             submission = [value_type, key, value]
             submissions.append(submission)
         self.submitted_data = submissions
+        print(f'Submision: {self.submitted_data}')
         self.refresh_screen()
 
     def submit_entries_button(self, root, entries):
@@ -328,6 +349,7 @@ class ConstructDocument():
         self.publish_doc(editor)
 
         called_info = self.get_called_information()
+        print(f"called info {called_info}")
         case_dict = self.get_known_information()
         
         # See what data is called for and what data we know.

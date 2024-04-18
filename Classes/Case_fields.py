@@ -62,5 +62,6 @@ interested_person={
     'Age if minor': ' ',
     'Legal Disability': ' ',
     'REPRESENTED BY': ' ', 
-
     }
+
+interested_persons = [interested_person, interested_person, interested_person, interested_person, interested_person]

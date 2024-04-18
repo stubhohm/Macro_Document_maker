@@ -1,4 +1,4 @@
-from Classes.Case_fields import case_name, attorney_info, applicant_info, filing_info, decedent_info, interested_person
+from Classes.Case_fields import case_name, attorney_info, applicant_info, filing_info, decedent_info, interested_person, interested_persons
 
 name = 'Name'
 address = 'Street Address'
@@ -28,9 +28,9 @@ death_date = 'Date of Death'
 death_time = 'Time of Death'
 will_date = 'Will Date'
 
-age_if_minor ='Age if Minor'
+age_if_minor ='Age if minor'
 legal_dis = 'Legal Disability'
-legal_rep ='REPRESENTED BY Name address and capacity'
+legal_rep ='REPRESENTED BY'
 
 keys = [name, 
         address, 
@@ -106,10 +106,17 @@ class DocumentEditor:
             info_type = 'filing_info'
         elif 'Decedent' in definition:
             info_type = 'decedent_info'
-        elif 'Interested Person' in definition:
-            info_type = 'interested_person'
+        elif 'Interested' in definition:
+            info_type = 'interested_persons'
         else:
             return info_type, False
+        for i in range(1,6):
+            print(f'Count: {i}')
+            as_str = f'{i}'
+            if as_str in definition:
+                print(f"as str: {as_str}, and def: {definition}")
+                info_type += f'[{as_str}]'
+                continue
 
         # Check for compound info function calls
         if 'Full Name, Addrress and Phone' in definition:
@@ -145,8 +152,11 @@ class DocumentEditor:
         if 'None' in definition or 'Case Information Fields' in definition:
             text = "' '"
         # Check what info type we need based on selection and if a key is needed
+        print(f'definitiaon: {definition}')
+        print(f'Before : {text}')
         info_type, needs_key = self.set_py_doc_info_type(definition, text)
         text = text + info_type
+        print(f'After : {text}')
         # If a key is needed fills in the needed key
         if needs_key:
             text = self.set_py_doc_key(definition, text)            
@@ -155,9 +165,13 @@ class DocumentEditor:
 
     def replace_place_holders(self, entries, progress, bar_size):
         for i, entry in enumerate(entries):
+            print(f"Entry: {entry}")
             field_name, var = entry['field'], entry['var'].get()
+            print(f'field_name {field_name}')
+            print(f'var : {var}')
             text = self.make_field_text(var)
             old_string = f"'field: {field_name}'"
+            print(f'Old: {old_string}, New: {text}')
             self.py_file_text = self.py_file_text.replace(old_string, text)
             progress['value'] = i
         self.write_py_file()
@@ -273,13 +287,20 @@ class DocumentEditor:
         fx_header = '    def update_dictionary(self):'
         line_header = "\n        self."
         self.py_file_text += '\n\n' + fx_header + line_header + f"case_name = '{case_name}'"
-        line_groups = [[applicant_info,"applicant_info['"], [filing_info,"filing_info['"], [decedent_info, "decedent_info['"], [interested_person,"interested_person['"]]
+        line_groups = [[applicant_info,"applicant_info['"], [filing_info,"filing_info['"], [decedent_info, "decedent_info['"]]
         for item in line_groups:
             line_subtype_text = item[1]
             line_sub_type = item[0]
             for key in line_sub_type.keys():
                 output_line = line_header + line_subtype_text + key + "'] = ''"
+                print(f'output line{output_line}')
                 self.py_file_text+= output_line
+        for i, person in enumerate(interested_persons):
+            line_subtype_text = f"interested_persons[{i}]['"
+            for key in person.keys():
+                output_line = line_header + line_subtype_text + key + "'] = ''"
+                self.py_file_text+= output_line
+            
         snake_name = self.make_snake(case_name)
         self.destination_file_py += snake_name + '.py'
         

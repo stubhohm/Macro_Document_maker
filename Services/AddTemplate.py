@@ -1,6 +1,6 @@
 testing_name = 'test beach visit'
 testing_text = "I went to the beach on .date#date of beach visit#, and I spend the day with .name#beach friend 1#, .name#beach friend 2# and .name#beach friend 3#."
-from Classes.Case_fields import attorney_info, applicant_info, filing_info, decedent_info, interested_person
+from Classes.Case_fields import attorney_info, applicant_info, filing_info, decedent_info, interested_persons, interested_person
 case_fields = ['None', 'Attorney', 'Applicant', 'Filing', 'Decenent', 'Interested Person']
 
 
@@ -218,7 +218,8 @@ class AddTemplate():
             self.add_cascades(menu, 'Applicant', applicant_info, var)
             self.add_cascades(menu, 'Filing', filing_info, var)
             self.add_cascades(menu, 'Decedent', decedent_info, var)
-            self.add_cascades(menu, 'Interested Person', interested_person, var)
+            for i, interested_person in enumerate(interested_persons):
+                self.add_cascades(menu, f'Interested Person {i+1}', interested_person, var)
             entry = {'field' : field,'var' : var, 'selection' : option_menu}
             self.entries.append(entry)
             i += 1

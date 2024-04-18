@@ -8,8 +8,7 @@ class CaseInformation:
         self.filing_info = filing_info
         self.decedent_info = decedent_info
         self.interested_person = interested_person
-        self.interested_persons = []
-
+        self.interested_persons = [interested_person, interested_person, interested_person, interested_person, interested_person]
         
     def add_interested_person(self, person):
         self.interested_persons.append(person)
