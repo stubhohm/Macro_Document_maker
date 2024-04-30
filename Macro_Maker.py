@@ -18,7 +18,6 @@ from Services.AddCaseInfo import AddCaseInfo
 from Services.ConstructDocument import ConstructDocument
 menus = [MainScreen, AddTemplate, AddCaseInfo, ConstructDocument]
 
-
 def init_instances():
     # UI Mngr houses the other screens and handles clearing and switching between screen displays
     ui_mngr = GUIManager(Tk(), messagebox)
